@@ -1,17 +1,17 @@
-name: Front-End CI
+name: Back-End CI
 
 on:
   push:
     branches: [ "main" ]
     paths:
-      - 'front-end/**'
+      - 'back-end/**'
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'front-end/**'
+      - 'back-end/**'
 
 jobs:
- build:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,15 +28,20 @@ jobs:
 
     - name: CI - Install dependencies
       run: |
-        cd front-end
+        cd back-end
         npm ci
 
-    - name: Test - Run tests
+    - name: Test - Run unit tests
       run: |
-        cd front-end
-        npm test
+        cd back-end
+        npm run test
+
+    - name: Test - Run e2e tests
+      run: |
+        cd back-end
+        npm run test:e2e
 
     - name: Build - Create production build
       run: |
-        cd front-end
-        npm run build --if-present
+        cd back-end
+        npm run build
