@@ -1,0 +1,47 @@
+name: Back-End CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'back-end/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'back-end/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+
+    - name: CI - Install dependencies
+      run: |
+        cd back-end
+        npm ci
+
+    - name: Test - Run unit tests
+      run: |
+        cd back-end
+        npm run test
+
+    - name: Test - Run e2e tests
+      run: |
+        cd back-end
+        npm run test:e2e
+
+    - name: Build - Create production build
+      run: |
+        cd back-end
+        npm run build
