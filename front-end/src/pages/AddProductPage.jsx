@@ -1,21 +1,34 @@
-// src/pages/AddProductPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import BarcodeScanner from '../components/BarcodeScanner';
 
 function AddProductPage() {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [volume, setVolume] = useState('');
   const [barCode, setBarCode] = useState('');
+  const [scanning, setScanning] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aqui você pode adicionar a lógica para salvar o produto
-    console.log('Novo produto:', { name, type, volume, barCode });
-    navigate('/'); // Redireciona de volta para a página inicial
+    const newProduct = { name, type, volume, barCode };
+
+    try {
+      await axios.post('http://localhost:3001/products', newProduct);
+      alert('Produto cadastrado com sucesso!');
+      navigate('/');
+    } catch (error) {
+      alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
+    }
+  };
+
+  const handleScan = (scannedCode) => {
+    setBarCode(scannedCode);
+    setScanning(false);
   };
 
   return (
@@ -67,6 +80,14 @@ function AddProductPage() {
               onChange={(e) => setBarCode(e.target.value)}
               className="border border-gray-300 px-3 py-2 rounded-md w-full"
             />
+            <button
+              type="button"
+              onClick={() => setScanning(!scanning)}
+              className="bg-orange-500 text-white px-4 py-2 rounded-full mt-2"
+            >
+              {scanning ? 'Parar de Escanear' : 'Escanear Código de Barras'}
+            </button>
+            {scanning && <BarcodeScanner onScan={handleScan} />}
           </div>
           <button
             type="submit"
