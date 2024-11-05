@@ -3,6 +3,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AddProductPage from './pages/AddProductPage';
+//import * as database from 'back-end';
+
+
 
 function App() {
   return (
@@ -16,5 +19,7 @@ function App() {
     </Router>
   );
 }
+
+//database.MyQuery(`Select * from produto`);
 
 export default App;

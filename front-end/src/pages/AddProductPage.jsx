@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarcodeScanner from '../components/BarcodeScanner';
 
+
 function AddProductPage() {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
