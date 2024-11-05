@@ -15,8 +15,8 @@ Criar uma plataforma onde gere:
 ## Tecnologias Utilizadas
 
 - **Front-end:**
-- **Back-end:**
-- **Banco de Dados:**
+- **Back-end:** 
+- **Banco de Dados:** PostgresSQL
 - **Versionamento de Código:** Git e GitHub
 
 ## Contribuição
