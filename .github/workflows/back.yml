@@ -47,14 +47,6 @@ jobs:
         cd back-end
         npm run build
 
-    - name: DATABASE_SSL
-      env:
-        DATABASE_SSL: ${{ secrets.DATABASE_SSL }}
-
-    - name: DATABASE_PASSWORD
-      env:
-        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        
     
 
 
