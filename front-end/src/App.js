@@ -3,23 +3,36 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AddProductPage from './pages/AddProductPage';
-//import * as database from 'back-end';
 
 
+const funcs = {
+  App() {
+    return (
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/adicionar-produto" element={<AddProductPage />} />
+          </Routes>
+        </div>
+      </Router>
+    );
+  },
 
-function App() {
-  return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/adicionar-produto" element={<AddProductPage />} />
-        </Routes>
-      </div>
-    </Router>
-  );
+  TesteDB(){
+    //envia um json com o conteudo para o server do back-end
+    fetch("http://localhost:4000/adduser", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "table": "table_name"
+      }),
+    }).then((res)=>{
+      alert(JSON.stringify(res));
+    })
+    
+  }
 }
-
-//database.MyQuery(`Select * from produto`);
-
-export default App;
+export default funcs;

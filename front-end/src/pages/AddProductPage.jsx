@@ -4,6 +4,7 @@ import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarcodeScanner from '../components/BarcodeScanner';
+import funcs from "../\App"
 
 
 function AddProductPage() {
@@ -90,7 +91,7 @@ function AddProductPage() {
             </button>
             {scanning && <BarcodeScanner onScan={handleScan} />}
           </div>
-          <button
+          <button onClick={funcs.TesteDB}
             type="submit"
             className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition-colors"
           >

@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "back-end": "file:../back-end",
+    "concurrently": "^9.1.0",
     "dotenv": "^16.4.5",
     "front-end": "file:",
     "fs": "^0.0.1-security",
