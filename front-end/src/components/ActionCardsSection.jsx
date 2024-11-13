@@ -17,14 +17,18 @@ function ActionCardsSection() {
   const handleCardClick = (index) => {
     if (index === 0) {
       navigate('/adicionar-produto');
+    } else if (index === 1) {
+      navigate('/criar-campanha');
+    }else if (index === 2) {
+      navigate('/registrar-doacoes');
     }
-    // Adicionar lógica para os outros cartões aqui
+    // Lógica para os outros cartões
   };
 
   return (
     <div className="relative flex-1 flex justify-center items-center">
       <ConnectingLines />
-      <div className="relative z-10 grid grid-cols-2 gap-8 md:grid-cols-4">
+      <div className="relative z-10 bottom-10 grid grid-cols-2 gap-8 md:grid-cols-4">
         {cards.map((card, index) => (
           <ActionCard
             key={index}

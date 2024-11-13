@@ -3,7 +3,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AddProductPage from './pages/AddProductPage';
-
+import CreateCampaignPage from './pages/CreateCampaignPage';
+import RegisterDonatePage from './pages/RegisterDonatePage';
 
 const funcs = {
   App() {
@@ -13,6 +14,8 @@ const funcs = {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/adicionar-produto" element={<AddProductPage />} />
+            <Route path="/criar-campanha" element={<CreateCampaignPage />} />
+            <Route path="/registrar-doacoes" element={<RegisterDonatePage />} />
           </Routes>
         </div>
       </Router>
