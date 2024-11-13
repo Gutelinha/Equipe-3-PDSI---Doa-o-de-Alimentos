@@ -1,4 +1,4 @@
-import { Product } from 'src/product/interfaces/product.interface';
+import { Produto } from '@prisma/client';
 import { ProductService } from './product.service';
 import { Body, Controller, Get, Post } from "@nestjs/common";
 
@@ -7,7 +7,7 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Post()
-    saveProduct(@Body() product: Product) {
+    saveProduct(@Body() product: Produto) {
         return this.productService.saveProduct(product);
     }
 

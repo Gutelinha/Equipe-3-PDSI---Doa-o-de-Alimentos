@@ -12,21 +12,19 @@ CREATE TABLE Campanha (
 	Nome VARCHAR (70) PRIMARY KEY,
 	Estado BOOLEAN DEFAULT TRUE NOT NULL,
 	D_ini TIMESTAMP NOT NULL,
-	D_fim TIMESTAMP,
-	CONSTRAINT CK_DATA 
-		CHECK (D_ini <= D_fim)
+	D_fim TIMESTAMP
 );
 
 CREATE TABLE Doacao (
 	Quantidade INT NOT NULL,
-	Campanha VARCHAR (70) NOT NULL,
-	Codigo_Barras VARCHAR(50) NOT NULL,
- 	CONSTRAINT FK_PRODUTO
-		FOREIGN KEY (Codigo_Barras) REFERENCES Produto (Codigo_Barras)
+	Nome_Campanha VARCHAR (70) NOT NULL,
+	Codigo_Barras_Produto VARCHAR(50) NOT NULL,
+	CONSTRAINT PK_DOACAO
+		PRIMARY KEY(Nome_Campanha, Codigo_Barras_Produto),
+	CONSTRAINT FK_PRODUTO
+		FOREIGN KEY(Codigo_Barras_Produto) REFERENCES Produto(Codigo_Barras)
 		ON DELETE CASCADE,
 	CONSTRAINT FK_CAMPANHA
-		FOREIGN KEY (Campanha) REFERENCES Campanha (Nome)
-		ON DELETE CASCADE,
-	CONSTRAINT PK_DOACAO
-		PRIMARY KEY (Campanha, Codigo_Barras)
+		FOREIGN KEY(Nome_Campanha) REFERENCES Campanha(Nome)
+		ON DELETE CASCADE
 );

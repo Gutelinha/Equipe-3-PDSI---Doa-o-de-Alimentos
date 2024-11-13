@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { Product } from "./interfaces/product.interface";
+import { Produto } from "@prisma/client";
 
 @Injectable()
 export class ProductService {
 
-    saveProduct(product: Product) {
+    saveProduct(product: Produto) {
         return "Saved product";
     }
     
