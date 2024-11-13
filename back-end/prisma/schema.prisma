@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model campanha {
+  nome   String    @id @db.VarChar(70)
+  estado Boolean   @default(true)
+  d_ini  DateTime  @db.Timestamp(6)
+  d_fim  DateTime? @db.Timestamp(6)
+  doacao doacao[]
+}
+
+model doacao {
+  quantidade            Int
+  nome_campanha         String   @db.VarChar(70)
+  codigo_barras_produto String   @db.VarChar(50)
+  campanha              campanha @relation(fields: [nome_campanha], references: [nome], onDelete: Cascade, onUpdate: NoAction, map: "fk_campanha")
+  produto               produto  @relation(fields: [codigo_barras_produto], references: [codigo_barras], onDelete: Cascade, onUpdate: NoAction, map: "fk_produto")
+
+  @@id([nome_campanha, codigo_barras_produto], map: "pk_doacao")
+}
+
+model produto {
+  codigo_barras  String   @id @db.VarChar(50)
+  nome           String   @db.VarChar(60)
+  marca          String?  @db.VarChar(40)
+  tipo           String   @db.VarChar(40)
+  unidade_volume String   @db.VarChar(20)
+  doacao         doacao[]
+}

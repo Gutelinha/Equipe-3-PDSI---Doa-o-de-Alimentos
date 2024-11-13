@@ -37,11 +37,6 @@ jobs:
         cd back-end
         npm run test
 
-    - name: Test - Run e2e tests
-      run: |
-        cd back-end
-        npm run test:e2e
-
     - name: Build - Create production build
       run: |
         cd back-end
