@@ -4,7 +4,7 @@ import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarcodeScanner from '../components/BarcodeScanner';
-import funcs from "../\App"
+import funcs from "../App"
 
 
 function AddProductPage() {

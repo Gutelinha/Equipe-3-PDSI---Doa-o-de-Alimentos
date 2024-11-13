@@ -1,7 +1,6 @@
 // src/components/Footer.jsx
 import React from 'react';
 import ContactSection from './ContactSection';
-import PartnersSection from './PartnersSection';
 
 function Footer() {
   return (
