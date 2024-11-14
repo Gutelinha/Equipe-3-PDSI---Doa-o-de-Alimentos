@@ -5,14 +5,13 @@ import Footer from '../components/Footer';
 
 function CreateCampaignPage() {
   const [name, setName] = useState('');
-  const [status, setStatus] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Nova campanha:', { name, status, startDate, endDate });
+    console.log('Nova campanha:', { name, startDate, endDate });
     navigate('/'); // Redireciona de volta para a página inicial
   };
 
@@ -37,15 +36,6 @@ function CreateCampaignPage() {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="border border-gray-300 px-3 py-2 rounded-md w-full"
-            />
-          </div>
-          <div>
-            <label htmlFor="status" className="block mb-2 text-gray-700">Status</label>
-            <input
-              id="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
               className="border border-gray-300 px-3 py-2 rounded-md w-full"
             />
           </div>
