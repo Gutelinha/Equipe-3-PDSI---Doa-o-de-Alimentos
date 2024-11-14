@@ -19,16 +19,18 @@ function ActionCardsSection() {
       navigate('/adicionar-produto');
     } else if (index === 1) {
       navigate('/criar-campanha');
-    }else if (index === 2) {
+    } else if (index === 2) {
       navigate('/registrar-doacoes');
+    } else if (index === 3) {
+      navigate('/visualizar-campanhas');
     }
     // Lógica para os outros cartões
   };
 
   return (
-    <div className="relative flex-1 flex justify-center items-center">
+    <div className="relative flex-1 flex justify-center items-center p-4">
       <ConnectingLines />
-      <div className="relative z-10 bottom-10 grid grid-cols-2 gap-8 md:grid-cols-4">
+      <div className="relative z-10 bottom-10 grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8"> {/* Ajuste de espaçamento */}
         {cards.map((card, index) => (
           <ActionCard
             key={index}

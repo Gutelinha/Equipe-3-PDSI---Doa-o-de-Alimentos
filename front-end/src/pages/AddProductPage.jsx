@@ -36,16 +36,16 @@ function AddProductPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header />
-      <div className="relative p-8">
+      <div className="relative p-4 md:p-8 lg:p-10">
         <button 
           onClick={() => navigate('/')} 
-          className="absolute top-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
+          className="absolute top-4 left-4 bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
         >
           Voltar
         </button>
-        <h2 className="text-orange-500 text-2xl font-bold text-center">Adicionar Novo Produto</h2>
+        <h2 className="text-orange-500 text-xl md:text-2xl font-bold text-center">Adicionar Novo Produto</h2>
       </div>
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 md:p-6 lg:p-8">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block mb-2 text-gray-700">Nome</label>

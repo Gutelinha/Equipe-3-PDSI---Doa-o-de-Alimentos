@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import AddProductPage from './pages/AddProductPage';
 import CreateCampaignPage from './pages/CreateCampaignPage';
 import RegisterDonatePage from './pages/RegisterDonatePage';
+import ViewCampaignsPage from './pages/ViewCampaignsPage';
 
 const funcs = {
   App() {
@@ -16,6 +17,7 @@ const funcs = {
             <Route path="/adicionar-produto" element={<AddProductPage />} />
             <Route path="/criar-campanha" element={<CreateCampaignPage />} />
             <Route path="/registrar-doacoes" element={<RegisterDonatePage />} />
+            <Route path="/visualizar-campanhas" element={<ViewCampaignsPage />} />
           </Routes>
         </div>
       </Router>

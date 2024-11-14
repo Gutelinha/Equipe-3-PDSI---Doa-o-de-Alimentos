@@ -1,4 +1,3 @@
-// src/pages/CreateCampaignPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -20,16 +19,16 @@ function CreateCampaignPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header />
-      <div className="relative p-8">
+      <div className="relative p-4 md:p-8 lg:p-10"> {/* Padding responsivo */}
         <button 
           onClick={() => navigate('/')} 
-          className="absolute top-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
+          className="absolute top-4 left-4 bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
         >
           Voltar
         </button>
-        <h2 className="text-orange-500 text-2xl font-bold text-center">Criar Nova Campanha</h2>
+        <h2 className="text-orange-500 text-xl md:text-2xl font-bold text-center">Criar Nova Campanha</h2>
       </div>
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 md:p-6 lg:p-8"> {/* Padding responsivo */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block mb-2 text-gray-700">Nome</label>
@@ -43,17 +42,12 @@ function CreateCampaignPage() {
           </div>
           <div>
             <label htmlFor="status" className="block mb-2 text-gray-700">Status</label>
-            <select
+            <input
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
               className="border border-gray-300 px-3 py-2 rounded-md w-full"
-            >
-              <option value="">Selecione um status</option>
-              <option value="ativa">Ativa</option>
-              <option value="concluída">Concluída</option>
-              <option value="cancelada">Cancelada</option>
-            </select>
+            />
           </div>
           <div>
             <label htmlFor="startDate" className="block mb-2 text-gray-700">Data de Início</label>
