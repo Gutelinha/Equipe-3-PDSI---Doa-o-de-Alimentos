@@ -3,12 +3,12 @@ import React from 'react';
 
 function ContactSection() {
   return (
-    <div className="text-white text-lg">
-      <div className="flex items-center mb-4">
-        <span className="mr-2">👤</span>
-        <span>Contate-nos</span>
+    <div className="text-white text-center mb-6 md:mb-0">
+      <div className="flex items-center justify-center mb-4">
+        <span className="mr-2 text-2xl">👤</span>
+        <span className="text-xl">Contate-nos</span>
       </div>
-      <div>
+      <div className="text-lg">
         Todos os direitos reservados
       </div>
     </div>

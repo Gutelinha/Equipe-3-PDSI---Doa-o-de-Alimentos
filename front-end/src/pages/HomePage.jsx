@@ -8,7 +8,7 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header />
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col"> {/* Padding responsivo */}
         <WelcomeSection />
         <ActionCardsSection />
       </main>
