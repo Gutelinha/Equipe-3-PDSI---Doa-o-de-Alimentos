@@ -7,17 +7,16 @@ import { ProductDto } from "./dto";
 export class ProductService {
     constructor(private prisma: PrismaService) {}
 
-    private async findProductByPrimaryKey(barcode: string): Promise<ProductModel> {
+    private async findByPrimaryKey(barcode: string): Promise<ProductModel> {
         return this.prisma.produto.findUnique({
             where: {codigo_barras: barcode}
         });
     } 
 
-    async saveProduct(productDto: ProductDto): Promise<ProductModel> {
+    async save(productDto: ProductDto): Promise<ProductModel> {
         console.log(`Creating new product:`, productDto);
 
-        const productAlreadyExists = await this.findProductByPrimaryKey(productDto.barcode);
-
+        const productAlreadyExists = await this.findByPrimaryKey(productDto.barcode);
         if(productAlreadyExists){
             console.log(`Product already exists`);
             throw new BadRequestException(`O produto de código de barras '${productDto.barcode}' já foi cadastrado`)
@@ -37,9 +36,9 @@ export class ProductService {
         return savedProduct;
     }
 
-    async findProductByBarcode(barcode: string): Promise<ProductModel> {
-        console.log(`Searching for product with barcode: "${barcode}"`)
-        const foundProduct = await this.findProductByPrimaryKey(barcode);
+    async findByBarcode(barcode: string): Promise<ProductModel> {
+        console.log(`Searching for product with barcode: '${barcode}'`)
+        const foundProduct = await this.findByPrimaryKey(barcode);
 
         if(!foundProduct){
             console.log(`Product not found`)
@@ -48,6 +47,16 @@ export class ProductService {
 
         console.log(`Product found:`, foundProduct);
         return foundProduct;
+    }
+
+    async deleteByBarcode(barcode: string): Promise<void> {
+        console.log(`Deleting product with barcode: '${barcode}'`)
+
+        const product = await this.prisma.produto.delete({
+            where: {codigo_barras: barcode}
+        })
+
+        console.log(`Product deleted:`, product);
     }
     
 }

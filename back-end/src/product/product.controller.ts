@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { produto as ProductModel } from "@prisma/client";
 import { ProductService } from './product.service';
 import { ProductDto } from './dto';
@@ -9,12 +9,17 @@ export class ProductController {
 
     @Post()
     saveProduct(@Body() productDto: ProductDto): Promise<ProductModel> {
-        return this.productService.saveProduct(productDto);
+        return this.productService.save(productDto);
     }
 
     @Get(':barcode')
     findProductByBarcode(@Param('barcode') barcode: string): Promise<ProductModel> {
-        return this.productService.findProductByBarcode(barcode);
+        return this.productService.findByBarcode(barcode);
+    }
+
+    @Delete(':barcode')
+    deleteProductByBarcode(@Param('barcode') barcode: string): void {
+        this.productService.deleteByBarcode(barcode);
     }
 
 }
