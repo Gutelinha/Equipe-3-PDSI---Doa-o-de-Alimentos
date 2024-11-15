@@ -5,6 +5,7 @@ function ConnectingLines() {
     <svg 
       className="absolute inset-0 w-full h-full"
       style={{ zIndex: 0 }}
+      viewBox="0 0 100 100"
     >
       <path
         d="M 50% 30% L 25% 50% M 50% 30% L 75% 50% M 50% 30% L 50% 70%"
