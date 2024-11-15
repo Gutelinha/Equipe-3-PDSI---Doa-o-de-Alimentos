@@ -1,7 +1,7 @@
-import { ProductService } from './product.service';
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
-import { ProductDto } from './dto';
 import { produto as ProductModel } from "@prisma/client";
+import { ProductService } from './product.service';
+import { ProductDto } from './dto';
 
 @Controller('products')
 export class ProductController {
