@@ -1,73 +1,83 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Quagga from '@ericblade/quagga2';
 
-const BarcodeScanner = ({ onScan, setScanning }) => {
+const BarcodeScanner = ({ onScan }) => {
     const scannerRef = useRef(null);
+    const [scanning, setScanning] = useState(true);
+
+    const handleQuaggaProcessed = (result) => {
+        const videoElement = scannerRef.current.querySelector('video');
+        if (videoElement) {
+            videoElement.classList.add('unmirror-video');
+        }
+        if (result) {
+            console.log("Frame processado:", result);
+            if (result.barcodes && result.barcodes.length > 0) {
+                console.log("Barcodes detectados:", result.barcodes);
+            }
+        }
+    };
 
     useEffect(() => {
-        Quagga.init({
-            inputStream: {
-                name: "Live",
-                type: "LiveStream",
-                target: scannerRef.current,
-                constraints: {
-                    width: { min: 640 },
-                    height: { min: 480 },
-                    facingMode: "environment"
+        if (scanning) {
+            Quagga.init({
+                inputStream: {
+                    type: "LiveStream",
+                    target: scannerRef.current,
+                    constraints: {
+                        facingMode: "environment",
+                    },
+                },
+                decoder: {
+                    readers: [
+                        "ean_reader" // Leitor para códigos EAN-13
+                    ],
+                    multiple: false // Permitir a detecção de múltiplos códigos de barras
+                },
+                locate: true,
+                locator: {
+                    patchSize: "x-large",
+                    halfSample: true
+                },
+                numOfWorkers: 4,
+                frequency: 50
+            }, (err) => {
+                if (err) {
+                    console.error('Erro ao iniciar o Quagga:', err);
+                    return;
                 }
-            },
-            decoder: {
-                readers: [
-                    "code_128_reader",
-                    "ean_reader",
-                    "upc_reader",
-                    "code_39_reader",
-                    "ean_8_reader",
-                    "upc_e_reader"
-                ]
-            },
-            locate: true, // Ativa a localização para melhorar a precisão
-            multiple: false // Evita múltiplas leituras simultâneas
-        }, (err) => {
-            if (err) {
-                console.error('Erro ao iniciar o Quagga:', err);
-                return;
-            }
-            console.log("Inicialização concluída. Pronto para começar");
-            Quagga.start();
-        });
+                console.log("Inicialização concluída. Pronto para começar");
+                Quagga.start();
+            });
 
-        Quagga.onDetected((data) => {
-            if (data && data.codeResult && data.codeResult.code) {
-                console.log("Código detectado:", data.codeResult.code);
-                onScan(data.codeResult.code);
-                setScanning(false); // Atualiza o estado de escaneamento para parar o scanner
-                Quagga.stop(); // Para o Quagga após a detecção
-            } else {
-                console.log("Código não detectado corretamente.");
-            }
-        });
+            Quagga.onDetected((data) => {
+                if (data && data.codeResult && data.codeResult.code) {
+                    const code = data.codeResult.code;
+                    console.log("Código detectado:", code);
+                    if (code.length === 13 && code.startsWith('781')) {
+                        onScan(code);
+                        Quagga.stop();
+                        setScanning(false);
+                    } else {
+                        console.log("Código inválido. Apenas códigos com 13 dígitos e iniciando com '781' são aceitos.");
+                        // Continuar escaneando sem parar o Quagga
+                    }
+                } else {
+                    console.log("Código não detectado corretamente.");
+                }
+            });
 
-        // Aplica a classe para desespelhar o vídeo
-        const handleQuaggaProcessed = () => {
-            const videoElement = scannerRef.current.querySelector('video');
-            if (videoElement) {
-                videoElement.classList.add('unmirror-video');
-            }
-        };
-
-        Quagga.onProcessed(handleQuaggaProcessed);
+            Quagga.onProcessed(handleQuaggaProcessed);
+        }
 
         return () => {
             Quagga.stop();
-            Quagga.offDetected();
-            Quagga.offProcessed(handleQuaggaProcessed);
         };
-    }, [onScan, setScanning]);
+    }, [scanning, onScan]);
 
     return (
-        <div ref={scannerRef} style={{ width: '100%', height: 'auto' }}>
-            {/* Quagga irá injetar os elementos de vídeo e canvas aqui */}
+        <div ref={scannerRef} style={{ width: '100%', height: '100%' }}>
+            {!scanning && <p>Escaneamento parado.</p>}
         </div>
     );
 };
