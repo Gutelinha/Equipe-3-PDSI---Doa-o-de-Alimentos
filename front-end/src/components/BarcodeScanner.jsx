@@ -56,7 +56,7 @@ const BarcodeScanner = ({ onScan }) => {
                 if (data && data.codeResult && data.codeResult.code) {
                     const code = data.codeResult.code;
                     console.log("Código detectado:", code);
-                    if (code.length === 13 && code.startsWith('781')) {
+                    if (code.length === 13 && code.startsWith('789')) {
                         console.log("Código válido detectado.");
                         onScan(code);
                         Quagga.stop();

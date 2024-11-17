@@ -32,7 +32,7 @@ function AddProductPage() {
 
     const handleScan = (code) => {
         console.log('Código recebido:', code);
-        if (code.startsWith('781')) {
+        if (code.startsWith('789')) {
             console.log('Processando código válido:', code);
             setBarCode(code); // Atualiza o estado barCode
             setScanning(false); // Para o scanner após um código válido
