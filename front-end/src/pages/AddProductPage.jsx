@@ -1,10 +1,12 @@
+// AddProductPage.jsx
+
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import BarcodeScanner from '../components/BarcodeScanner';
 import ErrorBoundary from '../components/ErrorBoundary';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 function AddProductPage() {
     const [name, setName] = useState('');
@@ -28,22 +30,27 @@ function AddProductPage() {
         }
     };
 
-    const handleScan = (scannedCode) => {
-        if (scanTimeout.current) return; // Ignora se já houver um scan recente
-        console.log("Código escaneado recebido:", scannedCode); // Log para verificar
-        setBarCode(scannedCode);
-        setScanning(false);
-        // Definir timeout para ignorar detecções por 2 segundos
-        scanTimeout.current = setTimeout(() => {
-            scanTimeout.current = null;
-        }, 2000);
+    const handleScan = (code) => {
+        console.log('Código recebido:', code);
+        if (code.startsWith('781')) {
+            console.log('Processando código válido:', code);
+            setBarCode(code); // Atualiza o estado barCode
+            setScanning(false); // Para o scanner após um código válido
+            alert('Código de barras escaneado com sucesso!');
+        } else {
+            console.log('Código inválido recebido:', code);
+            alert('Código de barras inválido. Tente novamente.');
+        }
     };
 
     return (
         <div className="min-h-screen bg-white flex flex-col">
             <Header />
             <div className="relative p-4 md:p-8 lg:p-10">
-                <button onClick={() => navigate('/')} className="mb-4 bg-blue-500 text-white px-4 py-2 rounded">
+                <button 
+                    onClick={() => navigate('/')} 
+                    className="mb-4 bg-blue-500 text-white px-4 py-2 rounded"
+                >
                     Voltar
                 </button>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -93,6 +100,7 @@ function AddProductPage() {
                             onChange={(e) => setBarCode(e.target.value)}
                             className="border border-gray-300 px-3 py-2 rounded-md w-full"
                             required
+                            readOnly={true} // Torna o campo readonly para evitar edições manuais
                         />
                         <button
                             type="button"
@@ -103,7 +111,7 @@ function AddProductPage() {
                         </button>
                         {scanning && (
                             <ErrorBoundary>
-                                <BarcodeScanner onScan={handleScan} setScanning={setScanning} />
+                                <BarcodeScanner onScan={handleScan} />
                             </ErrorBoundary>
                         )}
                     </div>

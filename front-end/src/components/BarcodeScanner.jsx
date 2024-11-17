@@ -1,3 +1,5 @@
+// BarcodeScanner.jsx
+
 import React, { useEffect, useRef, useState } from 'react';
 import Quagga from '@ericblade/quagga2';
 
@@ -36,7 +38,7 @@ const BarcodeScanner = ({ onScan }) => {
                 },
                 locate: true,
                 locator: {
-                    patchSize: "x-large",
+                    patchSize: "medium",
                     halfSample: true
                 },
                 numOfWorkers: 4,
@@ -55,11 +57,12 @@ const BarcodeScanner = ({ onScan }) => {
                     const code = data.codeResult.code;
                     console.log("Código detectado:", code);
                     if (code.length === 13 && code.startsWith('781')) {
+                        console.log("Código válido detectado.");
                         onScan(code);
                         Quagga.stop();
                         setScanning(false);
                     } else {
-                        console.log("Código inválido. Apenas códigos com 13 dígitos e iniciando com '781' são aceitos.");
+                        console.log("Código inválido. Continuando escaneamento.");
                         // Continuar escaneando sem parar o Quagga
                     }
                 } else {
