@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { produto as ProductModel } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { SaveProductDto, UpdateProductDto } from "./dto";
-import { ResponseMessageDto } from "src/common";
+import { ResponseMessageDto } from "../common";
 
 @Injectable()
 export class ProductService {

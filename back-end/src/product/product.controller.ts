@@ -2,9 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters } from "@ne
 import { produto as ProductModel } from "@prisma/client";
 import { ProductService } from './product.service';
 import { SaveProductDto, UpdateProductDto } from './dto';
-import { GlobalExceptionFilter } from "src/config/exception/filter/global.exception.filter";
-import { PrismaExceptionFilter } from "src/config/exception/filter/prisma.exception.filter";
-import { ResponseMessageDto } from "src/common";
+import { GlobalExceptionFilter } from "../config/exception/filter/global.exception.filter";
+import { PrismaExceptionFilter } from "../config/exception/filter/prisma.exception.filter";
+import { ResponseMessageDto } from "../common";
 
 @Controller('products')
 @UseFilters(GlobalExceptionFilter, PrismaExceptionFilter)
