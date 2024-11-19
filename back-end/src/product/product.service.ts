@@ -1,13 +1,14 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { produto as ProductModel } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
-import { ProductDto } from "./dto";
+import { SaveProductDto, UpdateProductDto } from "./dto";
+import { ResponseMessageDto } from "src/common";
 
 @Injectable()
 export class ProductService {
     constructor(private prisma: PrismaService) {}
 
-    async save(productDto: ProductDto): Promise<ProductModel> {
+    async save(productDto: SaveProductDto): Promise<ProductModel> {
         console.log(`Creating new product:`, productDto);
 
         const savedProduct = await this.prisma.produto.create({
@@ -28,11 +29,13 @@ export class ProductService {
         console.log(`Searching for product with barcode: '${barcode}'`)
 
         const foundProduct = await this.prisma.produto.findUnique({
-            where: {codigo_barras: barcode}
+            where: {
+                codigo_barras: barcode
+            }
         });
 
         if(!foundProduct){
-            console.log(`Product not found`)
+            console.log(`Error: Product not found`)
             throw new NotFoundException(`Produto não encontrado`);
         }
 
@@ -40,15 +43,43 @@ export class ProductService {
         return foundProduct;
     }
 
-    async deleteByBarcode(barcode: string){
+    async update(barcode: string, productDto: UpdateProductDto): Promise<ProductModel> {
+        await this.findByBarcode(barcode);
+
+        console.log(`Updating product with barcode '${barcode}' to:`, productDto);
+
+        if(productDto.isEmpty()){
+            console.log(`Error: No parameters were provided`);
+            throw new BadRequestException(`Nenhum parâmetro foi informado`);
+        }
+
+        const updatedProduct = await this.prisma.produto.update({
+            data: {
+                nome: productDto.name,
+                marca: productDto.brand,
+                tipo: productDto.type,
+                unidade_volume: productDto.volumeUnit
+            },
+            where: {
+                codigo_barras: barcode
+            }
+        })
+
+        console.log(`Product updated`);
+        return updatedProduct;
+    }
+
+    async deleteByBarcode(barcode: string): Promise<ResponseMessageDto> {
         console.log(`Deleting product with barcode: '${barcode}'`)
 
         const product = await this.prisma.produto.delete({
-            where: {codigo_barras: barcode}
+            where: {
+                codigo_barras: barcode
+            }
         })
 
         console.log(`Product deleted:`, product);
-        return "Produto removido com sucesso";
+        return new ResponseMessageDto("Produto removido com sucesso");
     }
     
 }
