@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class UpdateProductDto {
+export class UpdateProductInputDto {
     @IsString()
     @IsNotEmpty()
     @IsOptional()
@@ -19,12 +19,12 @@ export class UpdateProductDto {
     @IsString()
     @IsNotEmpty()
     @IsOptional()
-    volumeUnit?: string;
+    volume_unit?: string;
 
     public isEmpty(): boolean {
         return this.name == null 
             && this.brand == null
             && this.type == null
-            && this.volumeUnit == null
+            && this.volume_unit == null
     }
 }

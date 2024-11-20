@@ -14,5 +14,5 @@ export class CampaignOutputDto {
 
     @Transform(({ value }) => formatDateToString(value))
     @Expose({ name: 'data_fim' })
-    end_date: string;
+    end_date?: string;
 }

@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters } from "@nestjs/common";
-import { produto as ProductModel } from "@prisma/client";
 import { ProductService } from './product.service';
-import { SaveProductDto, UpdateProductDto } from './dto';
+import { ProductOutputDto, SaveProductInputDto, UpdateProductInputDto } from './dto';
 import { GlobalExceptionFilter } from "../config/exception/filter/global.exception.filter";
 import { PrismaExceptionFilter } from "../config/exception/filter/prisma.exception.filter";
 import { ResponseMessageDto } from "../common";
@@ -12,18 +11,18 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Post()
-    saveProduct(@Body() productDto: SaveProductDto): Promise<ProductModel> {
-        return this.productService.save(productDto);
+    saveProduct(@Body() input: SaveProductInputDto): Promise<ProductOutputDto> {
+        return this.productService.save(input);
     }
 
     @Get(':barcode')
-    findProductByBarcode(@Param('barcode') barcode: string): Promise<ProductModel> {
+    findProductByBarcode(@Param('barcode') barcode: string): Promise<ProductOutputDto> {
         return this.productService.findByBarcode(barcode);
     }
 
     @Put(':barcode')
-    updateProductByBarcode(@Param('barcode') barcode: string, @Body() productDto: UpdateProductDto): Promise<ProductModel> {
-        return this.productService.update(barcode, productDto);
+    updateProductByBarcode(@Param('barcode') barcode: string, @Body() input: UpdateProductInputDto): Promise<ProductOutputDto> {
+        return this.productService.update(barcode, input);
     }
 
     @Delete(':barcode')

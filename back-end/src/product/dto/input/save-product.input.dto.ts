@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class SaveProductDto {
+export class SaveProductInputDto {
     @IsString()
     @IsNotEmpty()
     barcode: string; // Código de barras (primary key)
@@ -20,5 +20,5 @@ export class SaveProductDto {
 
     @IsString()
     @IsNotEmpty()
-    volumeUnit: string; // Unidade de volume (not null)
+    volume_unit: string; // Unidade de volume (not null)
 }

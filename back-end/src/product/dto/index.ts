@@ -1,2 +1,3 @@
-export * from './save-product.dto';
-export * from './update-product.dto';
+export * from './input/save-product.input.dto';
+export * from './input/update-product.input.dto';
+export * from './output/product.output.dto'
