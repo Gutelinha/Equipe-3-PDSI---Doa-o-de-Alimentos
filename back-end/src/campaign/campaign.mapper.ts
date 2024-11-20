@@ -6,14 +6,8 @@ import { plainToInstance } from "class-transformer";
 @Injectable()
 export class CampaignMapper{
 
-    modelToOutput(model: CampaignModel): CampaignOutputDto {
+    toOutput(model: CampaignModel): CampaignOutputDto {
         return plainToInstance(CampaignOutputDto, model, {
-            excludeExtraneousValues: true
-        });
-    }
-
-    toOutput(promiseModel: Promise<CampaignModel>): CampaignOutputDto {
-        return plainToInstance(CampaignOutputDto, promiseModel, {
             excludeExtraneousValues: true
         })
     }

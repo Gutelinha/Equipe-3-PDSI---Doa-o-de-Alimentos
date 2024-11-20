@@ -2,7 +2,7 @@ import { IsDate, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Transform } from "class-transformer";
 import { parseDateString } from "../../../utils/date-converter";
 
-export class SaveCampaignInputDto {
+export class CampaignCreateInputDto {
     @IsString()
     @IsNotEmpty()
     name: string; // Nome (primary key)

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class SaveProductInputDto {
+export class ProductCreateInputDto {
     @IsString()
     @IsNotEmpty()
     barcode: string; // Código de barras (primary key)

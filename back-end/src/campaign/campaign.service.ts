@@ -1,20 +1,16 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { campanha as CampaignModel } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
-import { CampaignMapper } from "./campaign.mapper";
-import { SaveCampaignInputDto, CampaignOutputDto } from "./dto";
+import { CampaignCreateInputDto } from "./dto";
 
 @Injectable()
 export class CampaignService {
-    constructor(
-        private readonly prisma: PrismaService,
-        private readonly mapper: CampaignMapper
-    ) {}
+    constructor(private readonly prisma: PrismaService) {}
 
-    async create(input: SaveCampaignInputDto): Promise<CampaignOutputDto> {
+    async create(input: CampaignCreateInputDto): Promise<CampaignModel> {
         console.log(`Creating new campaign:`, input);
 
-        const savedCampaign: CampaignModel = await this.prisma.campanha.create({
+        const createdCampaign: CampaignModel = await this.prisma.campanha.create({
             data: {
                 nome: input.name,
                 data_inicio: input.start_date,
@@ -23,7 +19,7 @@ export class CampaignService {
         });
 
         console.log(`Campaign created!`);
-        return this.mapper.modelToOutput(savedCampaign);
+        return createdCampaign;
     }
 
     async findByName(name: string): Promise<CampaignModel> {
