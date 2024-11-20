@@ -65,4 +65,17 @@ export class CampaignService {
         return updatedCampaign;
     }
 
+    async deleteByName(name: string): Promise<CampaignModel> {
+        console.log(`Deleting campaign with name: '${name}'`);
+
+        const deletedCampaign = await this.prisma.campanha.delete({
+            where: {
+                nome: name
+            }
+        });
+
+        console.log(`Campaign deleted:`, deletedCampaign);
+        return deletedCampaign;
+    }
+
 }

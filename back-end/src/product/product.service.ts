@@ -25,7 +25,7 @@ export class ProductService {
     }
 
     async findByBarcode(barcode: string): Promise<ProductModel> {
-        console.log(`Searching for product with barcode: '${barcode}'`)
+        console.log(`Searching for product with barcode: '${barcode}'`);
 
         const foundProduct: ProductModel = await this.prisma.produto.findUnique({
             where: {
@@ -62,20 +62,20 @@ export class ProductService {
             where: {
                 codigo_barras: barcode
             }
-        })
+        });
 
         console.log(`Product updated`);
         return updatedProduct;
     }
 
     async deleteByBarcode(barcode: string): Promise<ProductModel> {
-        console.log(`Deleting product with barcode: '${barcode}'`)
+        console.log(`Deleting product with barcode: '${barcode}'`);
 
         const deletedProduct: ProductModel = await this.prisma.produto.delete({
             where: {
                 codigo_barras: barcode
             }
-        })
+        });
 
         console.log(`Product deleted:`, deletedProduct);
         return deletedProduct;

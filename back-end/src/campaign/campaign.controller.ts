@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Param, Post, Put, UseFilters } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters } from "@nestjs/common";
 import { GlobalExceptionFilter } from "../config/exception/filter/global.exception.filter";
 import { PrismaExceptionFilter } from "../config/exception/filter/prisma.exception.filter";
 import { CampaignService } from "./campaign.service";
-import { CampaignCreateInputDto, CampaignOutputDto, CampaignUpdateInputDto } from "./dto";
+import { CampaignCreateInputDto, CampaignUpdateInputDto, CampaignOutputDto, CampaignDeleteOutputDto } from "./dto";
 import { CampaignMapper } from "./campaign.mapper";
 
 @Controller('campaigns')
@@ -29,6 +29,12 @@ export class CampaignController{
     async updateCampaignByName(@Param('name') name: string, @Body() updateInput: CampaignUpdateInputDto): Promise<CampaignOutputDto> {
         const updatedCampaign = await this.campaignService.updateByName(name, updateInput);
         return this.campaignMapper.toOutput(updatedCampaign);
+    }
+
+    @Delete(':name')
+    async deleteCampaignByName(@Param('name') name: string): Promise<CampaignDeleteOutputDto> {
+        const deletedCampaign = await this.campaignService.deleteByName(name);
+        return this.campaignMapper.toDeleteOutput(deletedCampaign, "Campanha removida com sucesso");
     }
 
 }
