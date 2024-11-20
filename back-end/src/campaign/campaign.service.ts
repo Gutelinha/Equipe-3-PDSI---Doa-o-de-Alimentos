@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { campanha as CampaignModel } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { CampaignMapper } from "./campaign.mapper";
@@ -23,7 +23,25 @@ export class CampaignService {
         });
 
         console.log(`Campaign created!`);
-        return this.mapper.toOutput(savedCampaign);
+        return this.mapper.modelToOutput(savedCampaign);
+    }
+
+    async findByName(name: string): Promise<CampaignModel> {
+        console.log(`Searching for campaign with name: '${name}'`);
+
+        const foundCampaign: CampaignModel = await this.prisma.campanha.findUnique({
+            where: {
+                nome: name
+            }
+        });
+
+        if(!foundCampaign){
+            console.log(`Error: Campaign not found`)
+            throw new NotFoundException(`Campanha não encontrada`);
+        }
+
+        console.log(`Campaign found:`, foundCampaign);
+        return foundCampaign;
     }
 
 }
