@@ -14,8 +14,8 @@ export class ProductController {
     ) {}
 
     @Post()
-    async saveProduct(@Body() input: ProductCreateInputDto): Promise<ProductOutputDto> {
-        const createdProduct = await this.productService.create(input);
+    async saveProduct(@Body() createInput: ProductCreateInputDto): Promise<ProductOutputDto> {
+        const createdProduct = await this.productService.create(createInput);
         return this.productMapper.toOutput(createdProduct);
     }
 
@@ -26,8 +26,8 @@ export class ProductController {
     }
 
     @Put(':barcode')
-    async updateProductByBarcode(@Param('barcode') barcode: string, @Body() input: ProductUpdateInputDto): Promise<ProductOutputDto> {
-        const updatedProduct = await this.productService.update(barcode, input);
+    async updateProductByBarcode(@Param('barcode') barcode: string, @Body() updateInput: ProductUpdateInputDto): Promise<ProductOutputDto> {
+        const updatedProduct = await this.productService.update(barcode, updateInput);
         return this.productMapper.toOutput(updatedProduct);
     }
 

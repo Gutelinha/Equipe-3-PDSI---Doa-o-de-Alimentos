@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { campanha as CampaignModel } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
-import { CampaignCreateInputDto } from "./dto";
+import { CampaignCreateInputDto, CampaignUpdateInputDto } from "./dto";
 
 @Injectable()
 export class CampaignService {
@@ -38,6 +38,31 @@ export class CampaignService {
 
         console.log(`Campaign found:`, foundCampaign);
         return foundCampaign;
+    }
+
+    async updateByName(name: string, input: CampaignUpdateInputDto): Promise<CampaignModel> {
+        await this.findByName(name);
+
+        console.log(`Updating campaign with name '${name}' to:`, input);
+
+        if(input.isEmpty()){
+            console.log(`Error: No parameters were provided`);
+            throw new BadRequestException(`Nenhum dado foi informado`);
+        }
+
+        const updatedCampaign = await this.prisma.campanha.update({
+            data: {
+                ativa: input.active,
+                data_inicio: input.start_date,
+                data_fim: input.end_date
+            },
+            where: {
+                nome: name
+            }
+        });
+
+        console.log(`Campaign updated`);
+        return updatedCampaign;
     }
 
 }

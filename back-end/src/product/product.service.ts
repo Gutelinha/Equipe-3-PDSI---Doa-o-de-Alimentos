@@ -49,7 +49,7 @@ export class ProductService {
 
         if(input.isEmpty()){
             console.log(`Error: No parameters were provided`);
-            throw new BadRequestException(`Nenhum parâmetro foi informado`);
+            throw new BadRequestException(`Nenhum dado foi informado`);
         }
 
         const updatedProduct: ProductModel = await this.prisma.produto.update({
