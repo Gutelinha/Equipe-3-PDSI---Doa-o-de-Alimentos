@@ -1,30 +1,30 @@
 ﻿-- Script para criação de tabelas
 
 CREATE TABLE Produto (
-	Codigo_Barras VARCHAR (50) PRIMARY KEY,
-	Nome VARCHAR (60) NOT NULL,
-	Marca VARCHAR (40),
-	Tipo VARCHAR (40) NOT NULL,
-	Unidade_Volume VARCHAR (20) NOT NULL
+	codigo_barras VARCHAR (50) PRIMARY KEY,
+	nome VARCHAR (60) NOT NULL,
+	marca VARCHAR (40),
+	tipo VARCHAR (40) NOT NULL,
+	unidade_volume VARCHAR (20) NOT NULL
 );
 
 CREATE TABLE Campanha (
-	Nome VARCHAR (70) PRIMARY KEY,
-	Estado BOOLEAN DEFAULT TRUE NOT NULL,
-	D_ini TIMESTAMP NOT NULL,
-	D_fim TIMESTAMP
+	nome VARCHAR (70) PRIMARY KEY,
+	ativa BOOLEAN DEFAULT TRUE NOT NULL,
+	data_inicio DATE NOT NULL,
+	data_fim DATE
 );
 
 CREATE TABLE Doacao (
-	Quantidade INT NOT NULL,
-	Nome_Campanha VARCHAR (70) NOT NULL,
-	Codigo_Barras_Produto VARCHAR(50) NOT NULL,
+	quantidade INT NOT NULL,
+	nome_campanha VARCHAR (70) NOT NULL,
+	codigo_barras_produto VARCHAR(50) NOT NULL,
 	CONSTRAINT PK_DOACAO
-		PRIMARY KEY(Nome_Campanha, Codigo_Barras_Produto),
+		PRIMARY KEY(nome_campanha, codigo_barras_produto),
 	CONSTRAINT FK_PRODUTO
-		FOREIGN KEY(Codigo_Barras_Produto) REFERENCES Produto(Codigo_Barras)
+		FOREIGN KEY(codigo_barras_produto) REFERENCES Produto(codigo_barras)
 		ON DELETE CASCADE,
 	CONSTRAINT FK_CAMPANHA
-		FOREIGN KEY(Nome_Campanha) REFERENCES Campanha(Nome)
+		FOREIGN KEY(nome_campanha) REFERENCES Campanha(nome)
 		ON DELETE CASCADE
 );

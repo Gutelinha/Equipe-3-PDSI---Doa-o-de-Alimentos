@@ -1,4 +1,4 @@
-import { Catch, ArgumentsHost, HttpStatus, ExceptionFilter, HttpExceptionBody } from '@nestjs/common';;
+import { Catch, ArgumentsHost, HttpStatus, ExceptionFilter } from '@nestjs/common';;
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { Request, Response } from 'express';
 
@@ -52,6 +52,9 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     private getModelName(requestUrl: string): string {
         if(requestUrl.includes('/products'))
             return "Produto";
+
+        if(requestUrl.includes('/campaigns'))
+            return 'Campanha';
 
         return "Recurso"
     }
