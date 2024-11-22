@@ -101,7 +101,8 @@ export class CampaignService {
         updateInput: CampaignUpdateInputDto
     ): { start_date: Date | null; end_date: Date | null } {
         if(!updateInput.start_date && !updateInput.end_date)
-            return null;
+            return {start_date: null, end_date: null};
+
         return {
             start_date: (updateInput.start_date) ?? (currentCampaing.data_inicio),
             end_date: (updateInput.end_date) ?? (currentCampaing.data_fim)
