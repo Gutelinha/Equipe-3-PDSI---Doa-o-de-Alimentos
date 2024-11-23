@@ -13,6 +13,7 @@
     "dotenv": "^16.4.5",
     "front-end": "file:",
     "fs": "^0.0.1-security",
+    "package-json": "^10.0.1",
     "package.json": "^2.0.1",
     "pg": "^8.13.1",
     "process": "^0.11.10",
