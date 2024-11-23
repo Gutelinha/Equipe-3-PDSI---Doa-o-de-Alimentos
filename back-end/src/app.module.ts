@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ProductModule } from './product/product.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { ConfigModule } from '@nestjs/config';
+import { ProductModule } from './product/product.module';
+import { CampaignModule } from './campaign/campaign.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
-    ProductModule
+    ProductModule,
+    CampaignModule
   ]
 })
 export class AppModule {}
