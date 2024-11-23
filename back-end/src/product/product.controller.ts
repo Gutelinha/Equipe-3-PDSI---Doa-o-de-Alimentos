@@ -1,34 +1,39 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters } from "@nestjs/common";
-import { produto as ProductModel } from "@prisma/client";
-import { ProductService } from './product.service';
-import { SaveProductDto, UpdateProductDto } from './dto';
 import { GlobalExceptionFilter } from "../config/exception/filter/global.exception.filter";
 import { PrismaExceptionFilter } from "../config/exception/filter/prisma.exception.filter";
-import { ResponseMessageDto } from "../common";
+import { ProductService } from './product.service';
+import { ProductCreateInputDto, ProductUpdateInputDto, ProductOutputDto, ProductDeleteOutputDto } from './dto';
+import { ProductMapper } from './product.mapper';
 
 @Controller('products')
 @UseFilters(GlobalExceptionFilter, PrismaExceptionFilter)
 export class ProductController {
-    constructor(private readonly productService: ProductService) {}
+    constructor(
+        private readonly productService: ProductService,
+        private readonly productMapper: ProductMapper
+    ) {}
 
     @Post()
-    saveProduct(@Body() productDto: SaveProductDto): Promise<ProductModel> {
-        return this.productService.save(productDto);
+    async saveProduct(@Body() createInput: ProductCreateInputDto): Promise<ProductOutputDto> {
+        const createdProduct = await this.productService.create(createInput);
+        return this.productMapper.toOutput(createdProduct);
     }
 
     @Get(':barcode')
-    findProductByBarcode(@Param('barcode') barcode: string): Promise<ProductModel> {
-        return this.productService.findByBarcode(barcode);
+    async findProductByBarcode(@Param('barcode') barcode: string): Promise<ProductOutputDto> {
+        const foundProduct = await this.productService.findByBarcode(barcode);
+        return this.productMapper.toOutput(foundProduct);
     }
 
     @Put(':barcode')
-    updateProductByBarcode(@Param('barcode') barcode: string, @Body() productDto: UpdateProductDto): Promise<ProductModel> {
-        return this.productService.update(barcode, productDto);
+    async updateProductByBarcode(@Param('barcode') barcode: string, @Body() updateInput: ProductUpdateInputDto): Promise<ProductOutputDto> {
+        const updatedProduct = await this.productService.update(barcode, updateInput);
+        return this.productMapper.toOutput(updatedProduct);
     }
 
     @Delete(':barcode')
-    deleteProductByBarcode(@Param('barcode') barcode: string): Promise<ResponseMessageDto> {
-        return this.productService.deleteByBarcode(barcode);
+    async deleteProductByBarcode(@Param('barcode') barcode: string): Promise<ProductDeleteOutputDto> {
+        const deletedProduct = await this.productService.deleteByBarcode(barcode);
+        return this.productMapper.toDeleteOutput(deletedProduct, "Produto removido com sucesso");
     }
-
 }
