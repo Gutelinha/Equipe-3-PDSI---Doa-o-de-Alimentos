@@ -8,7 +8,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@zxing/library": "^0.21.3",
-    "axios": "^1.7.7",
+    "axios": "^1.7.8",
     "back-end": "file:../back-end",
     "concurrently": "^9.1.0",
     "dotenv": "^16.4.5",
