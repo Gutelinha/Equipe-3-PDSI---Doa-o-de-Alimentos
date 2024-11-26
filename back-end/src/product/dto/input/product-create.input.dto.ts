@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class ProductDto {
+export class ProductCreateInputDto {
     @IsString()
     @IsNotEmpty()
     barcode: string; // Código de barras (primary key)
@@ -10,6 +10,7 @@ export class ProductDto {
     name: string; // Nome (not null)
 
     @IsString()
+    @IsNotEmpty()
     @IsOptional()
     brand?: string; // Marca (optional)
 
@@ -19,5 +20,5 @@ export class ProductDto {
 
     @IsString()
     @IsNotEmpty()
-    volumeUnit: string; // Unidade de volume (not null)
+    volume_unit: string; // Unidade de volume (not null)
 }

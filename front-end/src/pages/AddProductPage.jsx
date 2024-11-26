@@ -49,10 +49,15 @@ function AddProductPage() {
             <div className="relative p-4 md:p-8 lg:p-10">
                 <button 
                     onClick={() => navigate('/')} 
-                    className="mb-4 bg-blue-500 text-white px-4 py-2 rounded"
+                    className="absolute top-4 left-4 bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
                 >
                     Voltar
                 </button>
+                <h2 className="text-orange-500 text-xl md:text-2xl font-bold text-center">
+                    Adicionar Novo Produto
+                </h2>
+            </div>
+            <main className="flex-1 p-4 md:p-6 lg:p-8">
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label htmlFor="name" className="block mb-2 text-gray-700">Nome</label>
@@ -100,12 +105,12 @@ function AddProductPage() {
                             onChange={(e) => setBarCode(e.target.value)}
                             className="border border-gray-300 px-3 py-2 rounded-md w-full"
                             required
-                            readOnly={true} // Torna o campo readonly para evitar edições manuais
+                            readOnly={true}
                         />
                         <button
                             type="button"
                             onClick={() => setScanning(!scanning)}
-                            className="bg-orange-500 text-white px-4 py-2 rounded-full mt-2"
+                            className="bg-orange-500 text-white px-4 py-2 rounded-full mt-2 hover:bg-orange-600 transition-colors"
                         >
                             {scanning ? 'Parar de Escanear' : 'Escanear Código de Barras'}
                         </button>
@@ -122,13 +127,12 @@ function AddProductPage() {
                         Salvar Produto
                     </button>
                 </form>
-                {/* Exibir o código de barras escaneado para verificação */}
                 {barCode && (
                     <div className="mt-4 p-4 bg-green-100 border border-green-300 rounded">
                         <strong>Código de Barras Escaneado:</strong> {barCode}
                     </div>
                 )}
-            </div>
+            </main>
             <Footer />
         </div>
     );

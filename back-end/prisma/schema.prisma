@@ -4,15 +4,15 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DB_URL")
 }
 
 model campanha {
-  nome   String    @id @db.VarChar(70)
-  estado Boolean   @default(true)
-  d_ini  DateTime  @db.Timestamp(6)
-  d_fim  DateTime? @db.Timestamp(6)
-  doacao doacao[]
+  nome        String    @id @db.VarChar(70)
+  ativa       Boolean   @default(true)
+  data_inicio DateTime  @db.Date
+  data_fim    DateTime? @db.Date
+  doacao      doacao[]
 }
 
 model doacao {

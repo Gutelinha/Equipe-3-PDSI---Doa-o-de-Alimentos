@@ -17,6 +17,7 @@
     "html5-qrcode": "^2.3.8",
     "https-localhost": "^4.7.1",
     "ngrok": "^5.0.0-beta.2",
+    "package-json": "^10.0.1",
     "package.json": "^2.0.1",
     "pg": "^8.13.1",
     "process": "^0.11.10",

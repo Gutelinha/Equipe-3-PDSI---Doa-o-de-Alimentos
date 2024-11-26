@@ -32,6 +32,15 @@ const ViewCampaignsPage = () => {
               🔍
             </span>
           </div>
+          {/* Botão de Gerar Relatório */}
+          <div className="mb-4 text-center">
+            <button 
+              onClick={() => alert('Relatório gerado!')} // Substitua pela lógica real de geração de relatório
+              className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
+            >
+              Gerar Relatório
+            </button>
+          </div>
           <div className="bg-orange-400 rounded-2xl p-6 shadow-lg"> {/* Removido min-h */}
             <div className="text-white mb-4">Campanha 1: Detalhes...</div>
             <div className="text-white mb-4">Campanha 2: Detalhes...</div>
