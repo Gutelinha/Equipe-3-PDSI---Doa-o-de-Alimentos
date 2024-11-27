@@ -43,7 +43,26 @@ export class DonationService {
         return foundDonation;
     }
 
-    async updateDonationByKey(input: DonationInputDto) {}
+    async updateDonationByKey(input: DonationInputDto) {
+        await this.findDonationByKey(input.key);
+
+        console.log(`Updating donation to`, input);
+
+        const updatedDonation = await this.prisma.doacao.update({
+            data: {
+                quantidade: input.quantity
+            },
+            where: {
+                nome_campanha_codigo_barras_produto: {
+                    nome_campanha: input.key.campaignName,
+                    codigo_barras_produto: input.key.productBarcode
+                }
+            }
+        });
+
+        console.log(`Donation updated`);
+        return updatedDonation;
+    }
 
     async deleteDonationByKey(key: DonationKeyInputDto) {}
 
