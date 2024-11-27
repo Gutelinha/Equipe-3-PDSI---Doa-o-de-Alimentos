@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { doacao as DonationModel } from "@prisma/client";
 import { DonationInputDto, DonationKeyInputDto } from "./dto";
@@ -22,7 +22,26 @@ export class DonationService {
         return createdDonation;
     }
 
-    async findDonationByKey(key: DonationKeyInputDto) {}
+    async findDonationByKey(key: DonationKeyInputDto) {
+        console.log(`Searching for donation with key:`, key);
+
+        const foundDonation: DonationModel = await this.prisma.doacao.findUnique({
+            where: {
+                nome_campanha_codigo_barras_produto: {
+                    nome_campanha: key.campaignName,
+                    codigo_barras_produto: key.productBarcode
+                }
+            }
+        })
+
+        if(!foundDonation){
+            console.log(`Error: Donation not found`)
+            throw new NotFoundException(`Doação não encontrada`);
+        }
+
+        console.log(`Donation found:`, foundDonation);
+        return foundDonation;
+    }
 
     async updateDonationByKey(input: DonationInputDto) {}
 
