@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Put, UseFilters } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, UseFilters } from "@nestjs/common";
 import { GlobalExceptionFilter } from "src/config/exception/filter/global.exception.filter";
 import { PrismaExceptionFilter } from "src/config/exception/filter/prisma.exception.filter";
 import { DonationService } from "./donation.service";
-import { DonationInputDto, DonationKeyInputDto, DonationOutputDto } from "./dto";
+import { DonationInputDto, DonationKeyInputDto, DonationOutputDto, DonationDeleteOutputDto } from "./dto";
 import { DonationMapper } from "./donation.mapper";
 
 @Controller('donations')
@@ -29,6 +29,12 @@ export class DonationController {
     async updateDonationByKey(@Body() input: DonationInputDto): Promise<DonationOutputDto> {
         const updatedDonation = await this.donationService.updateDonationByKey(input);
         return this.donationMapper.toOutput(updatedDonation);
+    }
+
+    @Delete()
+    async deleteDonationByKey(@Body() key: DonationKeyInputDto): Promise<DonationDeleteOutputDto> {
+        const deletedDonation = await this.donationService.deleteDonationByKey(key);
+        return this.donationMapper.toDeleteOutput(deletedDonation, `Doação removida com sucesso`);
     }
 
 }

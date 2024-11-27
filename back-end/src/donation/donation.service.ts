@@ -22,7 +22,7 @@ export class DonationService {
         return createdDonation;
     }
 
-    async findDonationByKey(key: DonationKeyInputDto) {
+    async findDonationByKey(key: DonationKeyInputDto): Promise<DonationModel> {
         console.log(`Searching for donation with key:`, key);
 
         const foundDonation: DonationModel = await this.prisma.doacao.findUnique({
@@ -43,7 +43,7 @@ export class DonationService {
         return foundDonation;
     }
 
-    async updateDonationByKey(input: DonationInputDto) {
+    async updateDonationByKey(input: DonationInputDto): Promise<DonationModel> {
         await this.findDonationByKey(input.key);
 
         console.log(`Updating donation to`, input);
@@ -64,6 +64,20 @@ export class DonationService {
         return updatedDonation;
     }
 
-    async deleteDonationByKey(key: DonationKeyInputDto) {}
+    async deleteDonationByKey(key: DonationKeyInputDto): Promise<DonationModel> {
+        console.log(`Deleting donation with key:`, key);
+
+        const deletedDonation = await this.prisma.doacao.delete({
+            where: {
+                nome_campanha_codigo_barras_produto: {
+                    nome_campanha: key.campaignName,
+                    codigo_barras_produto: key.productBarcode
+                }
+            }
+        });
+
+        console.log(`Donation deleted:`, deletedDonation);
+        return deletedDonation;
+    }
 
 }
