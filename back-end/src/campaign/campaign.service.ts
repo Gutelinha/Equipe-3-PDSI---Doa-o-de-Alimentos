@@ -45,6 +45,24 @@ export class CampaignService {
         return foundCampaign;
     }
 
+    async findAllByActive(active: boolean): Promise<CampaignModel[]> {
+        console.log(`Searching for all campaigns with active=${active}`);
+
+        const campaigns: CampaignModel[] = await this.prisma.campanha.findMany({
+            where: {
+                ativa: active
+            }
+        });
+
+        if(campaigns.length === 0){
+            console.log(`Error: No campaigns found with this status`)
+            throw new NotFoundException(`Nenhuma campanha foi encontrada`);
+        }
+
+        console.log(`${campaigns.length} campaigns found`);
+        return campaigns;
+    }
+
     async updateByName(name: string, input: CampaignUpdateInputDto): Promise<CampaignModel> {
         const currentCampaign = await this.findByName(name);
 

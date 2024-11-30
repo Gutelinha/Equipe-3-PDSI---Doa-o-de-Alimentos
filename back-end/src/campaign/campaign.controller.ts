@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseFilters } from "@nestjs/common";
 import { GlobalExceptionFilter } from "../config/exception/filter/global.exception.filter";
 import { PrismaExceptionFilter } from "../config/exception/filter/prisma.exception.filter";
 import { CampaignService } from "./campaign.service";
-import { CampaignCreateInputDto, CampaignUpdateInputDto, CampaignOutputDto, CampaignDeleteOutputDto } from "./dto";
+import { CampaignCreateInputDto, CampaignUpdateInputDto, CampaignFindAllFilterInputDto, CampaignOutputDto, CampaignDeleteOutputDto } from "./dto";
 import { CampaignMapper } from "./campaign.mapper";
 
 @Controller('campaigns')
@@ -23,6 +23,12 @@ export class CampaignController{
     async findCampaignByName(@Param('name') name: string): Promise<CampaignOutputDto> {
         const foundCampaign = await this.campaignService.findByName(name);
         return this.campaignMapper.toOutput(foundCampaign);
+    }
+
+    @Get()
+    async findAllActiveCampaigns(@Query() input: CampaignFindAllFilterInputDto): Promise<CampaignOutputDto[]> {
+        const activeCampaigns = await this.campaignService.findAllByActive(input.active);
+        return activeCampaigns.map(campaign => this.campaignMapper.toOutput(campaign));
     }
 
     @Put(':name')

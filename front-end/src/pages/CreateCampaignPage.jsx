@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { createCampaign } from '../api/Campaign';
 
 function CreateCampaignPage() {
   const [name, setName] = useState('');
@@ -9,16 +10,41 @@ function CreateCampaignPage() {
   const [endDate, setEndDate] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Nova campanha:', { name, startDate, endDate });
-    navigate('/'); // Redireciona de volta para a página inicial
+    
+    // Função para formatar a data
+    const formatDate = (dateString) => {
+      const date = new Date(dateString + 'T00:00:00');
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
   };
+  
+
+    const campaignData = {
+        name: name.trim(),
+        start_date: formatDate(startDate),
+        ...(endDate && { end_date: formatDate(endDate) })
+    };
+
+    try {
+        const response = await createCampaign(campaignData);
+        if (response) {
+          alert("Campanha criada com sucesso!")
+            navigate('/');
+        }
+    } catch (error) {
+        console.error('Erro ao criar campanha:', error);
+    }
+};
+
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header />
-      <div className="relative p-4 md:p-8 lg:p-10"> {/* Padding responsivo */}
+      <div className="relative p-4 md:p-8 lg:p-10">
         <button 
           onClick={() => navigate('/')} 
           className="absolute top-4 left-4 bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
@@ -27,7 +53,7 @@ function CreateCampaignPage() {
         </button>
         <h2 className="text-orange-500 text-xl md:text-2xl font-bold text-center">Criar Nova Campanha</h2>
       </div>
-      <main className="flex-1 p-4 md:p-6 lg:p-8"> {/* Padding responsivo */}
+      <main className="flex-1 p-4 md:p-6 lg:p-8">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block mb-2 text-gray-700">Nome</label>
@@ -36,6 +62,7 @@ function CreateCampaignPage() {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
               className="border border-gray-300 px-3 py-2 rounded-md w-full"
             />
           </div>
@@ -46,6 +73,7 @@ function CreateCampaignPage() {
               id="startDate"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
+              required
               className="border border-gray-300 px-3 py-2 rounded-md w-full"
             />
           </div>

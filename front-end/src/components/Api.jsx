@@ -50,51 +50,7 @@ export const deleteProduct = async (barcode) => {
     }
 }
 
-// Campanha
 
-export const createCampaign = async (campaign) => {
-    try {
-        const response = await Api.post('/campaigns', campaign);
-        return response.data;
-    }
-    catch (error) {
-        console.error('Erro ao cadastrar campanha:', error);
-        alert('Erro ao cadastrar campanha. Tente novamente mais tarde.');
-    }
-};
-
-export const getCampaign = async (name) => {
-    try {
-        const response = await Api.get(`/campaigns/${name}`);
-        return response.data;
-    }
-    catch (error) {
-        console.error('Erro ao buscar campanha:', error);
-        alert('Erro ao buscar campanha. Tente novamente mais tarde.');
-    }
-}
-
-export const updateCampaign = async (name, campaign) => {
-    try {
-        const response = await Api.put(`/campaigns/${name}`, campaign);
-        return response.data;
-    }
-    catch (error) {
-        console.error('Erro ao atualizar campanha:', error);
-        alert('Erro ao atualizar campanha. Tente novamente mais tarde.');
-    }
-}
-
-export const deleteCampaign = async (name) => {
-    try {
-        const response = await Api.delete(`/campaigns/${name}`);
-        return response.data;
-    }
-    catch (error) {
-        console.error('Erro ao deletar campanha:', error);
-        alert('Erro ao deletar campanha. Tente novamente mais tarde.');
-    }    
-}
 
 // Doação
 
