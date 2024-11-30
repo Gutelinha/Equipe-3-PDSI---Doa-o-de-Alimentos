@@ -16,6 +16,7 @@ export const createCampaign = async (campaign) => {
     catch (error) {
         console.error('Erro ao cadastrar campanha:', error);
         alert('Erro ao cadastrar campanha. Tente novamente mais tarde.');
+        return null;
     }
 };
 
@@ -26,8 +27,7 @@ export const getCampaign = async (name) => {
         return response.data;
     }
     catch (error) {
-        console.error('Erro ao buscar campanha:', error);
-        alert('Erro ao buscar campanha. Tente novamente mais tarde.');
+        return null;
     }
 }
 
