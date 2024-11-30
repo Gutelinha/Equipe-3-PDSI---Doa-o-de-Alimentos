@@ -124,20 +124,27 @@ const ViewCampaignsPage = () => {
                         <p>Data de Fim: {formatDate(campaign.end_date)}</p>
                       )}
                   <div className="flex gap-2 mt-2">
-                    <button 
-                      onClick={() => generateReport(campaign)}
-                      className="bg-white text-orange-500 px-4 py-1 rounded-md hover:bg-gray-100 transition-colors"
-                    >
-                      Gerar Relatório
-                    </button>
-                    <button 
-                      onClick={() => navigate(`/editar-campanha/${campaign.name}`)}
-                      className="bg-white text-orange-500 px-4 py-1 rounded-md hover:bg-gray-100 transition-colors"
-                    >
-                      Editar Campanha
-                    </button>
-                  </div>
+                  <button 
+                    onClick={() => generateReport(campaign)}
+                    className="bg-white text-orange-500 px-4 py-1 rounded-md hover:bg-gray-100 transition-colors"
+                  >
+                    Gerar Relatório
+                  </button>
+                  <button 
+                    onClick={() => navigate(`/editar-campanha/${campaign.name}`)}
+                    className="bg-white text-orange-500 px-4 py-1 rounded-md hover:bg-gray-100 transition-colors"
+                  >
+                    Editar Campanha
+                  </button>
+                  <button 
+                    onClick={() => navigate(`/encerrar-campanha/${campaign.name}`)}
+                    className="bg-white text-red-500 px-4 py-1 rounded-md hover:bg-gray-100 transition-colors"
+                  >
+                    Encerrar Campanha
+                  </button>
                 </div>
+                </div>
+
               ))}
               </div>
             ) : (
