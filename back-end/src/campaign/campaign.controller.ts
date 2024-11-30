@@ -2,9 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseFilters } fr
 import { GlobalExceptionFilter } from "../config/exception/filter/global.exception.filter";
 import { PrismaExceptionFilter } from "../config/exception/filter/prisma.exception.filter";
 import { CampaignService } from "./campaign.service";
-import { CampaignCreateInputDto, CampaignUpdateInputDto, CampaignOutputDto, CampaignDeleteOutputDto } from "./dto";
+import { CampaignCreateInputDto, CampaignUpdateInputDto, CampaignFindAllFilterInputDto, CampaignOutputDto, CampaignDeleteOutputDto } from "./dto";
 import { CampaignMapper } from "./campaign.mapper";
-import { CampaignFindAllFilterInputDto } from "./dto/input/campaign-find-all-filter.input.dto";
 
 @Controller('campaigns')
 @UseFilters(GlobalExceptionFilter, PrismaExceptionFilter)
