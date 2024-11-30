@@ -24,6 +24,6 @@ COPY --from=builder /usr/src/app/prisma ./prisma
 # Generate Prisma client for the target platform
 RUN npx prisma generate
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["node", "dist/main.js"]
