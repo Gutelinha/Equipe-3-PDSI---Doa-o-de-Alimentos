@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, UseFilters } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Post, Put, Query, UseFilters } from "@nestjs/common";
 import { GlobalExceptionFilter } from "src/config/exception/filter/global.exception.filter";
 import { PrismaExceptionFilter } from "src/config/exception/filter/prisma.exception.filter";
 import { DonationService } from "./donation.service";
@@ -15,26 +15,62 @@ export class DonationController {
 
     @Post()
     async createDonation(@Body() input: DonationInputDto): Promise<DonationOutputDto> {
-        const createdDonation = await this.donationService.createDonation(input);
+        if(input.key.isIncomplete())
+            throw new BadRequestException(input.key.getIncompleteKeyMessage());
+        
+        const createdDonation = await this.donationService.create(input);
         return this.donationMapper.toOutput(createdDonation);
     }
 
     @Get()
-    async findDonationByKey(@Body() key: DonationKeyInputDto): Promise<DonationOutputDto> {
-        const foundDonation = await this.donationService.findDonationByKey(key);
-        return this.donationMapper.toOutput(foundDonation);
+    async findDonation(@Query() key: DonationKeyInputDto) {
+        if(key.isEmpty())
+            throw new BadRequestException(`Nenhum dado foi informado`);
+
+        const {productBarcode, campaignName} = key;
+
+        if(productBarcode && campaignName)
+            return this.findDonationByKey(key);
+
+        if(productBarcode)
+            return this.findAllDonationsForProduct(productBarcode);
+    
+        if(campaignName)
+            return this.findAllDonationsForCampaign(campaignName);
     }
+
 
     @Put()
     async updateDonationByKey(@Body() input: DonationInputDto): Promise<DonationOutputDto> {
-        const updatedDonation = await this.donationService.updateDonationByKey(input);
+        if(input.key.isIncomplete())
+            throw new BadRequestException(input.key.getIncompleteKeyMessage());
+
+        const updatedDonation = await this.donationService.updateByKey(input);
         return this.donationMapper.toOutput(updatedDonation);
     }
 
     @Delete()
-    async deleteDonationByKey(@Body() key: DonationKeyInputDto): Promise<DonationDeleteOutputDto> {
-        const deletedDonation = await this.donationService.deleteDonationByKey(key);
+    async deleteDonationByKey(@Query() key: DonationKeyInputDto): Promise<DonationDeleteOutputDto> {
+        if(key.isIncomplete())
+            throw new BadRequestException(key.getIncompleteKeyMessage());
+
+        const deletedDonation = await this.donationService.deleteByKey(key);
         return this.donationMapper.toDeleteOutput(deletedDonation, `Doação removida com sucesso`);
+    }
+
+    private async findDonationByKey(key: DonationKeyInputDto): Promise<DonationOutputDto> {
+        const foundDonation = await this.donationService.findByKey(key);
+        return this.donationMapper.toOutput(foundDonation);
+    }
+
+    private async findAllDonationsForProduct(productBarcode: string): Promise<DonationOutputDto[]> {
+        const donationsByProduct = await this.donationService.findAllByProductBarcode(productBarcode);
+        return donationsByProduct.map(donation => this.donationMapper.toOutput(donation));
+    }
+
+    private async findAllDonationsForCampaign(campaignName: string): Promise<DonationOutputDto[]> {
+        const donationsByCampaign = await this.donationService.findAllByCampaignName(campaignName);
+        return donationsByCampaign.map(donation => this.donationMapper.toOutput(donation));
     }
 
 }

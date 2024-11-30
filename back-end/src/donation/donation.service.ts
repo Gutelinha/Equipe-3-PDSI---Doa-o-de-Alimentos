@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { doacao as DonationModel } from "@prisma/client";
 import { DonationInputDto, DonationKeyInputDto } from "./dto";
@@ -7,7 +7,7 @@ import { DonationInputDto, DonationKeyInputDto } from "./dto";
 export class DonationService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async createDonation(input: DonationInputDto): Promise<DonationModel> {
+    async create(input: DonationInputDto): Promise<DonationModel> {
         console.log(`Creating new donation:`, input);
 
         const createdDonation = await this.prisma.doacao.create({
@@ -22,7 +22,7 @@ export class DonationService {
         return createdDonation;
     }
 
-    async findDonationByKey(key: DonationKeyInputDto): Promise<DonationModel> {
+    async findByKey(key: DonationKeyInputDto): Promise<DonationModel> {
         console.log(`Searching for donation with key:`, key);
 
         const foundDonation: DonationModel = await this.prisma.doacao.findUnique({
@@ -43,8 +43,44 @@ export class DonationService {
         return foundDonation;
     }
 
-    async updateDonationByKey(input: DonationInputDto): Promise<DonationModel> {
-        await this.findDonationByKey(input.key);
+    async findAllByProductBarcode(productBarcode: string): Promise<DonationModel[]> {
+        console.log(`Searching for all donations by product with barcode '${productBarcode}'`);
+
+        const donationsByProduct : DonationModel[] = await this.prisma.doacao.findMany({
+            where: {
+                codigo_barras_produto: productBarcode
+            }
+        })
+
+        if(donationsByProduct.length === 0){
+            console.log(`Error: No donations found for this product`)
+            throw new NotFoundException(`Nenhuma doação foi encontrada para esse produto`);
+        }
+
+        console.log(`${donationsByProduct.length} donations found`);
+        return donationsByProduct;
+    }
+
+    async findAllByCampaignName(campaignName: string): Promise<DonationModel[]> {
+        console.log(`Searching for all donations by campaign with name '${campaignName}'`);
+
+        const donationsByCampaign: DonationModel[] = await this.prisma.doacao.findMany({
+            where: {
+                nome_campanha: campaignName
+            }
+        })
+
+        if(donationsByCampaign.length === 0){
+            console.log(`Error: No donations found for this campaign`)
+            throw new NotFoundException(`Nenhuma doação foi encontrada para essa campanha`);
+        }
+
+        console.log(`${donationsByCampaign.length} donations found`);
+        return donationsByCampaign;
+    }
+
+    async updateByKey(input: DonationInputDto): Promise<DonationModel> {
+        await this.findByKey(input.key);
 
         console.log(`Updating donation to`, input);
 
@@ -64,7 +100,7 @@ export class DonationService {
         return updatedDonation;
     }
 
-    async deleteDonationByKey(key: DonationKeyInputDto): Promise<DonationModel> {
+    async deleteByKey(key: DonationKeyInputDto): Promise<DonationModel> {
         console.log(`Deleting donation with key:`, key);
 
         const deletedDonation = await this.prisma.doacao.delete({
