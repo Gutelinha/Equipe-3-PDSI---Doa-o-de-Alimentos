@@ -1,39 +1,88 @@
-import React, { useEffect, useRef } from 'react';
-import Quagga from 'quagga';
+// BarcodeScanner.jsx
+
+import React, { useEffect, useRef, useState } from 'react';
+import Quagga from '@ericblade/quagga2';
 
 const BarcodeScanner = ({ onScan }) => {
-  const videoRef = useRef(null);
+    const scannerRef = useRef(null);
+    const [scanning, setScanning] = useState(true);
 
-  useEffect(() => {
-    Quagga.init({
-      inputStream: {
-        type: 'LiveStream',
-        target: videoRef.current,
-        constraints: {
-          facingMode: 'environment' // Use a câmera traseira
+    const handleQuaggaProcessed = (result) => {
+        const videoElement = scannerRef.current.querySelector('video');
+        if (videoElement) {
+            videoElement.classList.add('unmirror-video');
         }
-      },
-      decoder: {
-        readers: ['code_128_reader', 'ean_reader', 'ean_8_reader', 'code_39_reader', 'code_39_vin_reader', 'codabar_reader', 'upc_reader', 'upc_e_reader', 'i2of5_reader']
-      }
-    }, (err) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      Quagga.start();
-    });
-
-    Quagga.onDetected((data) => {
-      onScan(data.codeResult.code);
-    });
-
-    return () => {
-      Quagga.stop();
+        if (result) {
+            console.log("Frame processado:", result);
+            if (result.barcodes && result.barcodes.length > 0) {
+                console.log("Barcodes detectados:", result.barcodes);
+            }
+        }
     };
-  }, [onScan]);
 
-  return <div ref={videoRef} style={{ width: '100%' }} />;
+    useEffect(() => {
+        if (scanning) {
+            Quagga.init({
+                inputStream: {
+                    type: "LiveStream",
+                    target: scannerRef.current,
+                    constraints: {
+                        facingMode: "environment",
+                    },
+                },
+                decoder: {
+                    readers: [
+                        "ean_reader" // Leitor para códigos EAN-13
+                    ],
+                    multiple: false // Permitir a detecção de múltiplos códigos de barras
+                },
+                locate: true,
+                locator: {
+                    patchSize: "medium",
+                    halfSample: true
+                },
+                numOfWorkers: 4,
+                frequency: 50
+            }, (err) => {
+                if (err) {
+                    console.error('Erro ao iniciar o Quagga:', err);
+                    return;
+                }
+                console.log("Inicialização concluída. Pronto para começar");
+                Quagga.start();
+            });
+
+            Quagga.onDetected((data) => {
+                if (data && data.codeResult && data.codeResult.code) {
+                    const code = data.codeResult.code;
+                    console.log("Código detectado:", code);
+                    if (code.length === 13 && code.startsWith('789')) {
+                        console.log("Código válido detectado.");
+                        onScan(code);
+                        Quagga.stop();
+                        setScanning(false);
+                    } else {
+                        console.log("Código inválido. Continuando escaneamento.");
+                        // Continuar escaneando sem parar o Quagga
+                    }
+                } else {
+                    console.log("Código não detectado corretamente.");
+                }
+            });
+
+            Quagga.onProcessed(handleQuaggaProcessed);
+        }
+
+        return () => {
+            Quagga.stop();
+        };
+    }, [scanning, onScan]);
+
+    return (
+        <div ref={scannerRef} style={{ width: '100%', height: '100%' }}>
+            {!scanning && <p>Escaneamento parado.</p>}
+        </div>
+    );
 };
 
 export default BarcodeScanner;

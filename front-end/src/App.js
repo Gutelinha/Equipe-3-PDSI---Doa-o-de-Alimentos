@@ -6,6 +6,8 @@ import AddProductPage from './pages/AddProductPage';
 import CreateCampaignPage from './pages/CreateCampaignPage';
 import RegisterDonatePage from './pages/RegisterDonatePage';
 import ViewCampaignsPage from './pages/ViewCampaignsPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 const funcs = {
   App() {
@@ -14,6 +16,8 @@ const funcs = {
         <div className="App">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route path="/adicionar-produto" element={<AddProductPage />} />
             <Route path="/criar-campanha" element={<CreateCampaignPage />} />
             <Route path="/registrar-doacoes" element={<RegisterDonatePage />} />
