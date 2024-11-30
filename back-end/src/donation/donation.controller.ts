@@ -39,7 +39,6 @@ export class DonationController {
             return this.findAllDonationsForCampaign(campaignName);
     }
 
-
     @Put()
     async updateDonationByKey(@Body() input: DonationInputDto): Promise<DonationOutputDto> {
         if(input.key.isIncomplete())

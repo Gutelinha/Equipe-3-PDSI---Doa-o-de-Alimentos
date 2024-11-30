@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { doacao as DonationModel } from "@prisma/client";
 import { DonationInputDto, DonationKeyInputDto } from "./dto";
