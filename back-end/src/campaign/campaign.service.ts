@@ -8,7 +8,7 @@ export class CampaignService {
     constructor(private readonly prisma: PrismaService) {}
 
     async create(input: CampaignCreateInputDto): Promise<CampaignModel> {
-        console.log(`Creating new campaign:`, input.toString());
+        console.log(`Creating new campaign:`, input);
 
         if(this.invalidDates(input.start_date, input.end_date)){
             console.log(`Error: Start date has to happen before the end date`);
