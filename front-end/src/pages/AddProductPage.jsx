@@ -67,7 +67,7 @@ const AddProductPage = () => {
         if (code.length === 13) {
             try {
                 const product = await getProduct(code);
-                if (product) {
+                if (product && product.barcode) {
                     console.log('Produto encontrado:', product);
                     setName(product.name);
                     setType(product.type);
