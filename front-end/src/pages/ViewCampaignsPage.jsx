@@ -16,25 +16,36 @@ const ViewCampaignsPage = () => {
     setLoading(true);
     try {
       const response = await getCampaign(searchTerm);
+      if (!response) {
+        setCampaigns([]);
+        return;
+      }
       setCampaigns(Array.isArray(response) ? response : [response]);
     } catch (error) {
       console.error('Erro ao buscar campanha:', error);
+      setCampaigns([]);
     } finally {
       setLoading(false);
     }
   };
-
+  
   const handleShowAll = async () => {
     setLoading(true);
     try {
       const response = await getCampaign('');
+      if (!response) {
+        setCampaigns([]);
+        return;
+      }
       setCampaigns(Array.isArray(response) ? response : [response]);
     } catch (error) {
       console.error('Erro ao buscar campanhas:', error);
+      setCampaigns([]);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const generateReport = (campaign) => {
     if (!campaign) return;
