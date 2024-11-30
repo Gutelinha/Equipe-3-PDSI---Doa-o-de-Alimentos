@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { createProduct, getProduct } from '../components/Api';
 import BarcodeScanner from '../components/BarcodeScanner';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-function AddProductPage() {
+const AddProductPage = () => {
     const [name, setName] = useState('');
     const [type, setType] = useState('');
     const [volume, setVolume] = useState('');
@@ -29,9 +29,9 @@ function AddProductPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newProduct = { name, type, volume, barCode };
+        const newProduct = { barcode: barCode, name, brand: '', type, volumeUnit: volume };
         try {
-            await axios.post('http://localhost:3001/products', newProduct);
+            await createProduct(newProduct);
             alert('Produto cadastrado com sucesso!');
             navigate('/');
         } catch (error) {
@@ -47,31 +47,24 @@ function AddProductPage() {
             setBarCode(code); // Atualiza o estado barCode
             setScanning(false); // Para o scanner após um código válido
             alert('Código de barras escaneado com sucesso!');
-            await fetchProductDetails(code);
+            const product = await getProduct(code);
+            setName(product.name);
+            setType(product.type);
+            setVolume(product.volumeUnit);
         } else {
             console.log('Código inválido recebido:', code);
             alert('Código de barras inválido. Tente novamente.');
         }
     };
 
-    const fetchProductDetails = async (code) => {
-        try {
-            const response = await axios.get(`http://localhost:3001/products/${code}`);
-            const product = response.data;
-            setName(product.name);
-            setType(product.type);
-            setVolume(product.volume);
-        } catch (error) {
-            console.error('Erro ao buscar produto:', error);
-            alert('Produto não encontrado. Preencha as informações manualmente.');
-        }
-    };
-
     const handleBarCodeChange = async (e) => {
         const code = e.target.value;
         setBarCode(code);
-        if (code.length === 13) { // Supondo que o código de barras tenha 13 dígitos
-            await fetchProductDetails(code);
+        if (code.length === 13) { 
+            const product = await getProduct(code);
+            setName(product.name);
+            setType(product.type);
+            setVolume(product.volumeUnit);
         }
     };
 
@@ -195,6 +188,6 @@ function AddProductPage() {
             <Footer />
         </div>
     );
-}
+};
 
 export default AddProductPage;
