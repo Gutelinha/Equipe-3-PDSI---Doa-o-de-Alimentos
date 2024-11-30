@@ -13,23 +13,32 @@ function CreateCampaignPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const campaignData = {
-      name: name,
-      start_date: startDate, // O backend vai converter usando o Transform
-      end_date: endDate || undefined // Só envia se tiver valor
+    // Função para formatar a data
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
     };
 
-    console.log('Dados sendo enviados:', campaignData);
+    const campaignData = {
+        name: name.trim(),
+        start_date: formatDate(startDate),
+        ...(endDate && { end_date: formatDate(endDate) })
+    };
 
     try {
-      const response = await createCampaign(campaignData);
-      if (response) {
-        navigate('/');
-      }
+        const response = await createCampaign(campaignData);
+        if (response) {
+          alert("Campanha criada com sucesso!")
+            navigate('/');
+        }
     } catch (error) {
-      console.error('Erro ao criar campanha:', error);
+        console.error('Erro ao criar campanha:', error);
     }
-  };
+};
+
 
   return (
     <div className="min-h-screen bg-white flex flex-col">

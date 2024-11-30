@@ -10,7 +10,6 @@ const Api = axios.create({
 export const createCampaign = async (campaign) => {
     try {
         const jsonData = JSON.stringify(campaign);
-        console.error("Json data aqui: ", jsonData);
         const response = await Api.post('/campaigns', jsonData);
         return response.data;
     }
