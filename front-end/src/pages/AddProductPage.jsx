@@ -14,12 +14,11 @@ const AddProductPage = () => {
     const [scanning, setScanning] = useState(false);
     const [manualEntry, setManualEntry] = useState(false);
     const navigate = useNavigate();
-    const scannerRef = useRef(null); // Ref para o scanner
-    const barCodeInputRef = useRef(null); // Ref para o campo de entrada do código de barras
+    const scannerRef = useRef(null);
+    const barCodeInputRef = useRef(null);
 
     useEffect(() => {
         return () => {
-            // Limpa qualquer referência ao scanner quando o componente é desmontado
             if (scannerRef.current) {
                 scannerRef.current.stop();
                 scannerRef.current = null;
@@ -44,10 +43,27 @@ const AddProductPage = () => {
         console.log('Código recebido:', code);
         if (code.startsWith('789')) {
             console.log('Processando código válido:', code);
-            setBarCode(code); // Atualiza o estado barCode
-            setScanning(false); // Para o scanner após um código válido
+            setBarCode(code); 
+            setScanning(false); 
             alert('Código de barras escaneado com sucesso!');
-            const product = await getProduct(code);
+            let product = {};
+            try {
+                product = await getProduct(code);
+            } catch (error) {
+                if (error.response) {
+                    // A resposta foi recebida, mas o servidor respondeu com um status de erro
+                    console.error('Erro ao buscar produto:', error.response.data);
+                    alert('Erro ao buscar produto. Tente novamente mais tarde.');
+                } else if (error.request) {
+                    // A requisição foi feita, mas nenhuma resposta foi recebida
+                    console.error('Erro ao buscar produto: Nenhuma resposta recebida', error.request);
+                    alert('Erro ao buscar produto. Tente novamente mais tarde.');
+                } else {
+                    // Algo aconteceu ao configurar a requisição que acionou um erro
+                    console.error('Erro ao buscar produto:', error.message);
+                    alert('Erro ao buscar produto. Tente novamente mais tarde.');
+                }
+            }
             setName(product.name);
             setType(product.type);
             setVolume(product.volumeUnit);
@@ -70,7 +86,7 @@ const AddProductPage = () => {
 
     const toggleScanning = () => {
         if (scanning) {
-            window.location.reload(); // Atualiza a página ao parar o scanner
+            window.location.reload(); 
         } else {
             setScanning(true);
             setManualEntry(false);
