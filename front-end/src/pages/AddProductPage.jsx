@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createProduct, getProduct } from '../components/Api';
+import { createProduct, getProduct } from '../api/Product';
 import BarcodeScanner from '../components/BarcodeScanner';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Header from '../components/Header';
