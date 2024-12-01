@@ -22,7 +22,6 @@ function EditCampaignPage() {
             setEndDate(response.end_date ? formatDateForInput(response.end_date) : '');
           }
         } catch (error) {
-          console.error('Erro ao buscar campanha:', error);
           alert('Erro ao carregar dados da campanha');
           navigate('/visualizar-campanhas');
         } finally {
@@ -59,7 +58,6 @@ function EditCampaignPage() {
           navigate('/visualizar-campanhas');
         }
       } catch (error) {
-        console.error('Erro ao atualizar campanha:', error);
         alert('Erro ao atualizar campanha');
       }
     };

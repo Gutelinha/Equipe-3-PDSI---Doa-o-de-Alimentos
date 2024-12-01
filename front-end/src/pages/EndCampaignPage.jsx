@@ -17,7 +17,6 @@ function EndCampaignPage() {
       const date = new Date(dateString);
       return date.toISOString().split('T')[0];
     } catch (error) {
-      console.error('Erro ao formatar data para input:', error);
       return dateString;
     }
   };
@@ -83,7 +82,6 @@ function EndCampaignPage() {
         navigate('/visualizar-campanhas');
       }
     } catch (error) {
-      console.error('Erro ao encerrar campanha:', error);
       alert('Erro ao encerrar campanha');
     }
   };
