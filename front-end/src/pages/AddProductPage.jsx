@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createProduct, getProduct } from '../components/Api';
+import { createProduct, getProduct } from '../api/Product';
 import BarcodeScanner from '../components/BarcodeScanner';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Header from '../components/Header';
@@ -10,6 +10,7 @@ const AddProductPage = () => {
     const [name, setName] = useState('');
     const [type, setType] = useState('');
     const [volume, setVolume] = useState('');
+    const [brand, setBrand] = useState('ignorado');
     const [barCode, setBarCode] = useState('');
     const [scanning, setScanning] = useState(false);
     const [manualEntry, setManualEntry] = useState(false);
@@ -25,19 +26,6 @@ const AddProductPage = () => {
             }
         };
     }, []);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const newProduct = { barcode: barCode, name, brand: '', type, volumeUnit: volume };
-        try {
-            await createProduct(newProduct);
-            alert('Produto cadastrado com sucesso!');
-            navigate('/');
-        } catch (error) {
-            console.error('Erro ao cadastrar produto:', error);
-            alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
-        }
-    };
 
     const handleScan = async (code) => {
         console.log('Código recebido:', code);
@@ -76,11 +64,51 @@ const AddProductPage = () => {
     const handleBarCodeChange = async (e) => {
         const code = e.target.value;
         setBarCode(code);
-        if (code.length === 13) { 
-            const product = await getProduct(code);
-            setName(product.name);
-            setType(product.type);
-            setVolume(product.volumeUnit);
+        if (code.length === 13) {
+            try {
+                const product = await getProduct(code);
+                if (product && product.barcode) {
+                    console.log('Produto encontrado:', product);
+                    setName(product.name);
+                    setType(product.type);
+                    setVolume(product.volumeUnit);
+                    alert('Produto encontrado e informações preenchidas.');
+                } else {
+                    setName('');
+                    setType('');
+                    setVolume('');
+                    alert('Produto não encontrado. Você pode cadastrar um novo produto.');
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    setName('');
+                    setType('');
+                    setVolume('');
+                    alert('Produto não encontrado. Você pode cadastrar um novo produto.');
+                } else {
+                    console.error('Erro ao buscar produto:', error);
+                    alert('Erro ao buscar produto. Tente novamente mais tarde.');
+                }
+            }
+        }
+    };
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const newProduct = { 
+            barcode: barCode, 
+            name, 
+            brand, 
+            type, 
+            volume_unit: volume 
+        };
+        try {
+            await createProduct(newProduct);
+            alert('Produto cadastrado com sucesso!');
+            navigate('/');
+        } catch (error) {
+            console.error('Erro ao cadastrar produto:', error);
+            alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
         }
     };
 
@@ -158,6 +186,17 @@ const AddProductPage = () => {
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            className="border border-gray-300 px-3 py-2 rounded-md w-full"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="brand" className="block mb-2 text-gray-700">Marca</label>
+                        <input
+                            type="text"
+                            id="brand"
+                            value={brand}
+                            onChange={(e) => setBrand(e.target.value)}
                             className="border border-gray-300 px-3 py-2 rounded-md w-full"
                             required
                         />
