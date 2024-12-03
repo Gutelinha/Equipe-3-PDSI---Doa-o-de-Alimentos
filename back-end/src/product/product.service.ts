@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { produto as ProductModel } from "@prisma/client";
+import { produto as ProductModel, doacao as DonationModel } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { ProductCreateInputDto, ProductUpdateInputDto } from "./dto";
 
@@ -79,6 +79,33 @@ export class ProductService {
 
         console.log(`Product deleted:`, deletedProduct);
         return deletedProduct;
+    }
+
+    async findAllProductTypes() {
+        console.log(`Searching for all distinct product's types`);
+
+        const types: string[] = await this.prisma.produto.findMany({
+            distinct: ['tipo'],
+            select: {
+                tipo: true
+            }
+        }).then(result => result.map(product => product.tipo))
+
+        console.log(`${types.length} types found`)
+        return types;
+    }
+
+    async getDonatedProducts(donations: DonationModel[]): Promise<ProductModel[]> {
+        return await this.prisma.produto.findMany({
+          where: {
+            doacao: {
+                some: {
+                    nome_campanha: { in: donations.map(d => d.nome_campanha) },
+                    codigo_barras_produto: { in: donations.map(d => d.codigo_barras_produto) },
+                }
+            }
+          }
+        });
     }
 
 }
