@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { getCampaign, deleteCampaign } from '../api/Campaign';
+import { getCampaign, updateCampaign } from '../api/Campaign';
 
 function EndCampaignPage() {
   const { name } = useParams();
@@ -72,11 +72,12 @@ function EndCampaignPage() {
     }
 
     const campaignData = {
-      end_date: formatDateForApi(endDate)
+      end_date: formatDateForApi(endDate),
+      active: false
     };
 
     try {
-      const response = await deleteCampaign(name, campaignData);
+      const response = await updateCampaign(name, campaignData);
       if (response) {
         alert('Campanha encerrada com sucesso!');
         navigate('/visualizar-campanhas');

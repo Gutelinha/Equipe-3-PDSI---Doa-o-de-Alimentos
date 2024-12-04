@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useNavigate, useParams } from 'react-router-dom';
 import EndCampaignPage from './EndCampaignPage';
-import { getCampaign, deleteCampaign } from '../api/Campaign';
+import { getCampaign, updateCampaign } from '../api/Campaign';
 import { act } from 'react-dom/test-utils';
 
 // Mock das dependências
@@ -13,7 +13,7 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../api/Campaign', () => ({
   getCampaign: jest.fn(),
-  deleteCampaign: jest.fn()
+  updateCampaign: jest.fn()
 }));
 
 // Mock dos componentes Header e Footer
@@ -78,7 +78,7 @@ describe('EndCampaignPage', () => {
 
   test('encerra campanha com sucesso', async () => {
     getCampaign.mockResolvedValueOnce(mockCampaign);
-    deleteCampaign.mockResolvedValueOnce({ success: true });
+    updateCampaign.mockResolvedValueOnce({ success: true });
     window.confirm.mockReturnValueOnce(true);
     
     await act(async () => {
@@ -107,7 +107,7 @@ describe('EndCampaignPage', () => {
 
   test('trata erro ao encerrar campanha', async () => {
     getCampaign.mockResolvedValueOnce(mockCampaign);
-    deleteCampaign.mockRejectedValueOnce(new Error('Erro ao encerrar'));
+    updateCampaign.mockRejectedValueOnce(new Error('Erro ao encerrar'));
     window.confirm.mockReturnValueOnce(true);
     
     await act(async () => {
@@ -169,6 +169,6 @@ describe('EndCampaignPage', () => {
       fireEvent.click(screen.getByText('Confirmar Encerramento'));
     });
     
-    expect(deleteCampaign).not.toHaveBeenCalled();
+    expect(updateCampaign).not.toHaveBeenCalled();
   });
 });

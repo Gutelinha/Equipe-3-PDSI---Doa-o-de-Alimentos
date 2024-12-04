@@ -107,14 +107,7 @@ const ViewCampaignsPage = () => {
             >
               Editar Campanha
             </button>
-            {campaign.end_date ? (
-              <button 
-                onClick={() => navigate(`/excluir-campanha/${campaign.name}`)}
-                className="bg-white text-red-500 px-4 py-1 rounded-md hover:bg-gray-100 transition-colors"
-              >
-                Excluir Campanha
-              </button>
-            ) : (
+            {campaign.active && (
               <button 
                 onClick={() => navigate(`/encerrar-campanha/${campaign.name}`)}
                 className="bg-white text-red-500 px-4 py-1 rounded-md hover:bg-gray-100 transition-colors"
