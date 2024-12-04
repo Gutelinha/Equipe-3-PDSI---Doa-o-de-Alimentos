@@ -16,6 +16,7 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
 			message: `Erro desconhecido: ${exception.message}`
 		}
 
+		console.log(`Unknown Error: ${exception.message}`);
 		response.status(httpStatus).json(responseBody);
 	}
 
