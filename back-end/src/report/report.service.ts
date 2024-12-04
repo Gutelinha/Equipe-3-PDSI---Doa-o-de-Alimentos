@@ -1,68 +1,102 @@
-import { Injectable } from "@nestjs/common";
-import { produto as ProductModel, campanha as CampaignModel, doacao as DonationModel } from "@prisma/client";
-import { ProductService } from "./../product/product.service";
-import { CampaignService } from "./../campaign/campaign.service";
-import { DonationService } from "./../donation/donation.service";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { ReportMapper } from "./report.mapper";
 import { CampaignReportModel, ProductReportModel, ProductTypeReportModel } from "./model";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class ReportService {
     constructor(
-        private readonly productService: ProductService,
-        private readonly campaignService: CampaignService,
-        private readonly donationService: DonationService,
+        private readonly prisma: PrismaService,
         private readonly reportMapper: ReportMapper
     ) {}
 
     async generateCampaignReport(campaignName: string): Promise<CampaignReportModel> {
-        const campaign: CampaignModel = await this.campaignService.findByName(campaignName);
-        const donations: DonationModel[] = await this.donationService.findAllByCampaignName(campaignName);
+        console.log(`Generating report for campaign '${campaignName}'`);
 
-        console.log(`Generating report for campaign ${campaignName}`)
-        let campaignReport = this.reportMapper.toCampaignReportModel(campaign);
+        let campaignReport: CampaignReportModel = await this.getCampaignReport(campaignName);
+        let donatedProductTypes: ProductTypeReportModel[] = await this.getProductTypeReports(campaignName);
 
-        const productTypes: string[] = await this.productService.findAllProductTypes();
-        const donatedProducts: ProductModel[] = await this.productService.getDonatedProducts(donations);
+        for(let i=0; i<donatedProductTypes.length; i++) {
+            const element = donatedProductTypes.at(i);
+            const type = element.type;
+            const donatedProducts: ProductReportModel[] = await this.getProductReports(campaignName, type);
+            element.donated_products = donatedProducts;
+        }
 
-        const donatedProductTypes: ProductTypeReportModel[] = productTypes.map(type => {
-            const donatedProductsByType = this.getDonatedProductsByType(donatedProducts, type);
-            const donatedProductsReport = this.getDonatedProductsReport(donatedProductsByType);
-            return new ProductTypeReportModel(type, donatedProductsReport);
-        })
-
-        campaignReport.total_items_donated = donatedProductTypes.length;
         campaignReport.donated_product_types = donatedProductTypes;
+        console.log(`Campaign report generated!`);
         return campaignReport;
     }
 
-    private getDonatedProductsByType(products: ProductModel[], type: string): ProductModel[] {
-        return products.filter(product => product.tipo === type);
+    private async getCampaignReport(campaignName: string): Promise<CampaignReportModel> {
+        console.log(`Searching for campaign with name '${campaignName}'`);
+
+        const campaignWithDonations = await this.prisma.campanha.findUnique({
+            where: { 
+                nome: campaignName
+            },
+            include: {
+                doacao: true,
+            },
+        });
+    
+        if(!campaignWithDonations) {
+            console.log(`Error: Campaign not found`);
+            throw new NotFoundException('Campanha não encontrada');
+        }
+    
+        const totalItens = campaignWithDonations.doacao.reduce((sum, doacao) => sum + doacao.quantidade, 0);
+        console.log(`Total items donated for this campaign: ${totalItens}`);
+
+        return this.reportMapper.toCampaignReportModel(campaignWithDonations, totalItens);
     }
 
-    private getDonatedProductsReport(products: ProductModel[]): ProductReportModel[] {
-        // Agrupa os produtos por nome
-        const productsGroupedByName = products.reduce((acc, product) => {
-            const existing = acc[product.nome];
-            if (existing) {
-                // Incrementa a quantidade e ajusta o volume total
-                existing.quantity += 1;
-                existing.total_volume += ` + ${product.unidade_volume}`;
-            } else {
-                // Cria um novo agrupamento
-                acc[product.nome] = {
-                    name: product.nome,
-                    quantity: 1,
-                    total_volume: product.unidade_volume,
-                };
-            }
-            return acc;
-        }, {} as Record<string, ProductReportModel>);
-    
-        // Converte o objeto agrupado para uma lista de ProductReportModel
-        return Object.values(productsGroupedByName).map(
-            item => new ProductReportModel(item.name, item.quantity, item.total_volume),
-        );
+    private async getProductTypeReports(campaignName: string): Promise<ProductTypeReportModel[]> {
+        console.log(`Searching for types of product donated for campaign '${campaignName}'`);
+        
+        const query_results = await this.prisma.$queryRaw<
+            { tipo: string; qtd_itens_doados: number }[]
+        >`
+            SELECT p.tipo, SUM(d.quantidade) AS qtd_itens_doados
+            FROM produto p
+            JOIN doacao d
+                ON d.codigo_barras_produto = p.codigo_barras
+                AND d.nome_campanha = ${campaignName}
+            GROUP BY p.tipo;
+        `;
+
+        const productTypeReport = query_results.map(row => new ProductTypeReportModel(
+            row.tipo,
+            row.qtd_itens_doados
+        ));
+
+        console.log(`${productTypeReport.length} types of product found`);
+        return productTypeReport;
+    }
+
+    private async getProductReports(campaignName: string, productType: string): Promise<ProductReportModel[]> {
+        console.log(`Searching for products of type '${productType}' donated for campaign '${campaignName}'`);
+        
+        const query_results = await this.prisma.$queryRaw<
+            { nome: string; unidade_volume: string; quantidade: number }[]
+        >`
+            SELECT p.nome, p.unidade_volume, SUM(d.quantidade) AS quantidade
+            FROM produto p
+            JOIN doacao d
+                ON d.codigo_barras_produto = p.codigo_barras
+                AND d.nome_campanha = ${campaignName}
+            WHERE p.tipo = ${productType}
+            GROUP BY p.nome, p.unidade_volume;
+        `;
+
+        const productReport = query_results.map(row => new ProductReportModel(
+            row.nome,
+            row.unidade_volume,
+            row.quantidade
+        ));
+
+        console.log(`${productReport.length} different products found`);
+        return productReport;
     }
 
 }

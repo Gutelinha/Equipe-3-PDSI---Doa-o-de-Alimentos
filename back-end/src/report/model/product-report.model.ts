@@ -1,11 +1,12 @@
 export class ProductReportModel {
     name: string;
+    volume_unit: string;
     quantity: number;
     total_volume: string;
 
-    constructor(name: string, quantity: number, total_volume: string) {
+    constructor(name: string, volume_unit: string, quantity: number) {
         this.name = name;
-        this.quantity = quantity;
-        this.total_volume = total_volume;
+        this.volume_unit = volume_unit;
+        this.quantity = Number(quantity);
     }
 }

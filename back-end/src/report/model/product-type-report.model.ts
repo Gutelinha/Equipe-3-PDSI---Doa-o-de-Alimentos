@@ -5,9 +5,8 @@ export class ProductTypeReportModel {
     items_donated: number;
     donated_products: ProductReportModel[];
 
-    constructor(type: string, products_donated: ProductReportModel[]) {
+    constructor(type: string, items_donated: number) {
         this.type = type;
-        this.items_donated = products_donated.length;
-        this.donated_products = products_donated;
+        this.items_donated = Number(items_donated);
     }
 }
