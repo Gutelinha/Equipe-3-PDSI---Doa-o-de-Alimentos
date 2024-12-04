@@ -27,7 +27,7 @@ export class ProductController {
 
     @Put(':barcode')
     async updateProductByBarcode(@Param('barcode') barcode: string, @Body() updateInput: ProductUpdateInputDto): Promise<ProductOutputDto> {
-        const updatedProduct = await this.productService.update(barcode, updateInput);
+        const updatedProduct = await this.productService.updateByBarcode(barcode, updateInput);
         return this.productMapper.toOutput(updatedProduct);
     }
 
