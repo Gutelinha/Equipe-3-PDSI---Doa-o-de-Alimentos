@@ -5,7 +5,7 @@ import { Disclosure } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/20/solid';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-//import { getCampaignReport } from '../api/Report';
+import { getCampaignReport } from '../api/Report';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import CampaignReportPDF from '../components/CampaignReportPDF';
 
@@ -16,71 +16,26 @@ const CampaignReportPage = () => {
     const [loading, setLoading] = useState(true);
   
     useEffect(() => {
-      // Mock data
-      const mockReport = {
-        campaign_name: "Campanha de Natal",
-        active_campaign: true,
-        campaign_start_date: "18/12/2024",
-        campaign_end_date: null,
-        total_items_donated: 20,
-        donated_product_types: [
-          {
-            type: "Alimento",
-            items_donated: 16,
-            donated_products: [
-              {
-                name: "Açúcar",
-                volume_unit: "1 Kg",
-                quantity: 2,
-                total_volume: "2 Kg"
-              },
-              {
-                name: "Arroz",
-                volume_unit: "1 Kg",
-                quantity: 3,
-                total_volume: "3 Kg"
-              },
-              {
-                name: "Arroz",
-                volume_unit: "2 Kg",
-                quantity: 3,
-                total_volume: "6 Kg"
-              },
-              {
-                name: "Arroz",
-                volume_unit: "5 Kg",
-                quantity: 3,
-                total_volume: "15 Kg"
-              },
-              {
-                name: "Óleo de soja",
-                volume_unit: "900 ml",
-                quantity: 5,
-                total_volume: "4.5 L"
-              }
-            ]
-          },
-          {
-            type: "Higiene",
-            items_donated: 4,
-            donated_products: [
-              {
-                name: "Papel Higiênico",
-                volume_unit: "12 unidades",
-                quantity: 4,
-                total_volume: "48 unidades"
-              }
-            ]
+        const fetchReport = async () => {
+          try {
+            const response = await getCampaignReport(name);
+            if (!response) {
+              alert('Erro ao gerar relatório');
+              navigate('/visualizar-campanhas');
+              return;
+            }
+            setReport(response);
+          } catch (error) {
+            console.error('Erro ao buscar relatório:', error);
+            alert('Erro ao gerar relatório');
+            navigate('/visualizar-campanhas');
+          } finally {
+            setLoading(false);
           }
-        ]
-      };
-  
-      // Simula delay da API
-      setTimeout(() => {
-        setReport(mockReport);
-        setLoading(false);
-      }, 1000);
-    }, [name]);
+        };
+      
+        fetchReport();
+      }, [name, navigate]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
