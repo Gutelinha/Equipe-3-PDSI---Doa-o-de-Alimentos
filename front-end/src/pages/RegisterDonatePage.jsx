@@ -1,5 +1,3 @@
-// RegisterDonatePage.jsx
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -45,9 +43,9 @@ const RegisterDonatePage = () => {
 
   const handleScanBarcode = () => {
     if (scanning) {
-      window.location.reload(); // Recarrega a página ao parar o scanner
+      window.location.reload();
     } else {
-      setScanning(true); // Inicia o scanner
+      setScanning(true);
       setManualEntry(false);
     }
   };
