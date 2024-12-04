@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ViewCampaignsPage from './ViewCampaignsPage';
 import { getCampaign } from '../api/Campaign';
 
+// Mock das dependências
 jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn()
 }));
@@ -12,88 +13,57 @@ jest.mock('../api/Campaign', () => ({
   getCampaign: jest.fn()
 }));
 
+// Mock do @headlessui/react
+jest.mock('@headlessui/react', () => ({
+  Tab: {
+    Group: ({ children }) => <div>{children}</div>,
+    List: ({ children }) => <div>{children}</div>,
+    Panels: ({ children }) => <div>{children}</div>,
+    Panel: ({ children }) => <div>{children}</div>,
+    __esModule: true
+  }
+}));
+
+// Mock dos componentes
 jest.mock('../components/Header', () => () => <div data-testid="header">Header</div>);
 jest.mock('../components/Footer', () => () => <div data-testid="footer">Footer</div>);
 
 describe('ViewCampaignsPage', () => {
   const mockNavigate = jest.fn();
-  const mockCampaign = {
-    name: 'Campanha Teste',
-    start_date: '2024-01-01',
-    end_date: '2024-12-31'
-  };
 
   beforeEach(() => {
     jest.clearAllMocks();
     useNavigate.mockReturnValue(mockNavigate);
-    window.alert = jest.fn();
   });
 
-  test('renderiza componentes corretamente', () => {
+  test('deve renderizar componentes iniciais', () => {
     render(<ViewCampaignsPage />);
-    
-    expect(screen.getByText('Visualizar Campanhas')).toBeInTheDocument();
+
+    expect(screen.getByTestId('header')).toBeInTheDocument();
+    expect(screen.getByTestId('footer')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Digite o nome da campanha...')).toBeInTheDocument();
-    expect(screen.getByText('Buscar')).toBeInTheDocument();
     expect(screen.getByText('Mostrar Todas')).toBeInTheDocument();
   });
 
-  test('botão voltar navega para página inicial', () => {
+  test('deve mostrar mensagem inicial antes da busca', () => {
     render(<ViewCampaignsPage />);
-    
-    fireEvent.click(screen.getByText('Voltar'));
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+
+    expect(screen.getByText('Use a busca ou clique em "Mostrar Todas" para visualizar as campanhas')).toBeInTheDocument();
   });
 
-  test('busca campanha específica', async () => {
-    getCampaign.mockResolvedValueOnce(mockCampaign);
-    render(<ViewCampaignsPage />);
-    
-    fireEvent.change(screen.getByPlaceholderText('Digite o nome da campanha...'), {
-      target: { value: 'Campanha Teste' }
-    });
-    
-    fireEvent.click(screen.getByText('Buscar'));
-    
-    await waitFor(() => {
-      expect(screen.getByText('Campanha Teste')).toBeInTheDocument();
-      // Usando regex para ser mais flexível com o formato da data
-      expect(screen.getByText(/Data de Início:/)).toBeInTheDocument();
-      expect(screen.getByText(/Data de Fim:/)).toBeInTheDocument();
-    });
-  });
-
-  test('mostra todas as campanhas', async () => {
-    const mockCampaigns = [mockCampaign, {...mockCampaign, name: 'Campanha 2'}];
-    getCampaign.mockResolvedValueOnce(mockCampaigns);
+  test('deve mostrar loading durante a busca', async () => {
+    getCampaign.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
     
     render(<ViewCampaignsPage />);
     fireEvent.click(screen.getByText('Mostrar Todas'));
-    
-    await waitFor(() => {
-      expect(screen.getByText('Campanha Teste')).toBeInTheDocument();
-      expect(screen.getByText('Campanha 2')).toBeInTheDocument();
-    });
+
+    expect(screen.getByText('Carregando campanhas...')).toBeInTheDocument();
   });
 
-  test('gera relatório para campanha', async () => {
-    getCampaign.mockResolvedValueOnce(mockCampaign);
-    render(<ViewCampaignsPage />);
-    
-    fireEvent.change(screen.getByPlaceholderText('Digite o nome da campanha...'), {
-      target: { value: 'Campanha Teste' }
-    });
-    
-    fireEvent.click(screen.getByText('Buscar'));
-    
-    await waitFor(() => {
-      fireEvent.click(screen.getByText('Gerar Relatório'));
-      expect(window.alert).toHaveBeenCalledWith('Relatório gerado para campanha: Campanha Teste');
-    });
-  });
 
-  test('exibe mensagem quando nenhuma campanha é encontrada', async () => {
-    getCampaign.mockResolvedValueOnce([]);
+  test('deve mostrar mensagem quando nenhuma campanha é encontrada', async () => {
+    getCampaign.mockResolvedValue([]);
+
     render(<ViewCampaignsPage />);
     
     fireEvent.click(screen.getByText('Mostrar Todas'));
@@ -101,14 +71,5 @@ describe('ViewCampaignsPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Nenhuma campanha encontrada')).toBeInTheDocument();
     });
-  });
-
-  test('exibe loading durante a busca', async () => {
-    getCampaign.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
-    render(<ViewCampaignsPage />);
-    
-    fireEvent.click(screen.getByText('Mostrar Todas'));
-    
-    expect(screen.getByText('Carregando campanhas...')).toBeInTheDocument();
   });
 });

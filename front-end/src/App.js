@@ -8,6 +8,7 @@ import RegisterDonatePage from './pages/RegisterDonatePage';
 import ViewCampaignsPage from './pages/ViewCampaignsPage';
 import EditCampaignPage from './pages/EditCampaignPage';
 import EndCampaignPage from './pages/EndCampaignPage';
+import CampaignReportPage from './pages/CampaignReportPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
@@ -26,6 +27,7 @@ const funcs = {
             <Route path="/visualizar-campanhas" element={<ViewCampaignsPage />} />
             <Route path="/editar-campanha/:name" element={<EditCampaignPage />} />
             <Route path="/encerrar-campanha/:name" element={<EndCampaignPage />} />
+            <Route path="/relatorio-campanha/:name" element={<CampaignReportPage />} />
 
           </Routes>
         </div>

@@ -20,9 +20,11 @@ export const createCampaign = async (campaign) => {
     }
 };
 
-export const getCampaign = async (name) => {
+export const getCampaign = async (name, params = {}) => {
     try {
-        const endpoint = name ? `/campaigns/${name}` : '/campaigns?active=true';
+        const endpoint = name ? 
+            `/campaigns/${name}` : 
+            `/campaigns?active=${params.active ?? true}`;
         const response = await Api.get(endpoint);
         return response.data;
     }
