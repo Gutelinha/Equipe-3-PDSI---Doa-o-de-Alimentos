@@ -3,7 +3,6 @@ import { ProductController } from '../product.controller';
 import { ProductService } from '../product.service';
 import { ProductMapper } from '../product.mapper';
 import { ProductCreateInputDto, ProductUpdateInputDto, ProductOutputDto, ProductDeleteOutputDto } from '../dto';
-import { BadRequestException } from '@nestjs/common';
 
 describe('ProductController', () => {
     let controller: ProductController;
