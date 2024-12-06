@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, Post, Put, Query, UseFilters } from "@nestjs/common";
-import { GlobalExceptionFilter } from "src/config/exception/filter/global.exception.filter";
-import { PrismaExceptionFilter } from "src/config/exception/filter/prisma.exception.filter";
+import { GlobalExceptionFilter } from "../config/exception/filter/global.exception.filter";
+import { PrismaExceptionFilter } from "../config/exception/filter/prisma.exception.filter";
 import { DonationService } from "./donation.service";
 import { DonationInputDto, DonationKeyInputDto, DonationOutputDto, DonationDeleteOutputDto } from "./dto";
 import { DonationMapper } from "./donation.mapper";
