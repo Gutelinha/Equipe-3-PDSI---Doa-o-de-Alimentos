@@ -43,6 +43,8 @@ export class ProductService {
     }
 
     async updateByBarcode(barcode: string, input: ProductUpdateInputDto): Promise<ProductModel> {
+        await this.findByBarcode(barcode);
+
         console.log(`Updating product with barcode '${barcode}' to:`, input);
 
         if(input.isEmpty()){
