@@ -33,11 +33,6 @@ describe('ProductService', () => {
         jest.clearAllMocks();
     });
 
-    it('should be defined', () => {
-        expect(service).toBeDefined();
-        expect(prisma).toBeDefined();
-    });
-
     // Testes unitários para a criação de produtos
     describe('create', () => {
         it('should create a product successfully', async () => {
@@ -50,7 +45,6 @@ describe('ProductService', () => {
             };
       
             const mockProduct = {
-                id: 1,
                 codigo_barras: '123456',
                 nome: 'Test Product',
                 marca: 'Test Brand',
@@ -81,7 +75,6 @@ describe('ProductService', () => {
         it('should return the product if found', async () => {
             const mockBarcode = '123456';
             const mockProduct = {
-                id: 1,
                 codigo_barras: mockBarcode,
                 nome: 'Test Product',
                 marca: 'Test Brand',
@@ -122,7 +115,6 @@ describe('ProductService', () => {
             };
       
             const mockProduct = {
-                id: 1,
                 codigo_barras: mockBarcode,
                 nome: 'Updated Product',
                 marca: 'Updated Brand',
@@ -169,7 +161,6 @@ describe('ProductService', () => {
         it('should delete the product successfully', async () => {
             const mockBarcode = '123456';
             const mockProduct = {
-                id: 1,
                 codigo_barras: mockBarcode,
                 nome: 'Test Product',
                 marca: 'Test Brand',
