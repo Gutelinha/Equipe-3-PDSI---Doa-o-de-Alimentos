@@ -10,6 +10,12 @@ export class DonationService {
     async create(input: DonationInputDto): Promise<DonationModel> {
         console.log(`Creating new donation:`, input);
 
+        // If donation already exists, update its quantity
+        const donationUpdated = await this.updateQuantityIfAlreadyExists(input);
+        if(donationUpdated)
+            return donationUpdated;
+
+        // If not, create new donation
         const createdDonation = await this.prisma.doacao.create({
             data: {
                 codigo_barras_produto: input.key.productBarcode,
@@ -25,14 +31,7 @@ export class DonationService {
     async findByKey(key: DonationKeyInputDto): Promise<DonationModel> {
         console.log(`Searching for donation with key:`, key);
 
-        const foundDonation: DonationModel = await this.prisma.doacao.findUnique({
-            where: {
-                nome_campanha_codigo_barras_produto: {
-                    nome_campanha: key.campaignName,
-                    codigo_barras_produto: key.productBarcode
-                }
-            }
-        })
+        const foundDonation: DonationModel = await this.getDonationByKey(key);
 
         if(!foundDonation){
             console.log(`Error: Donation not found`)
@@ -80,9 +79,7 @@ export class DonationService {
     }
 
     async updateByKey(input: DonationInputDto): Promise<DonationModel> {
-        await this.findByKey(input.key);
-
-        console.log(`Updating donation to`, input);
+        console.log(`Updating donation to:`, input);
 
         const updatedDonation = await this.prisma.doacao.update({
             data: {
@@ -96,7 +93,7 @@ export class DonationService {
             }
         });
 
-        console.log(`Donation updated`);
+        console.log(`Donation updated!`);
         return updatedDonation;
     }
 
@@ -114,6 +111,31 @@ export class DonationService {
 
         console.log(`Donation deleted:`, deletedDonation);
         return deletedDonation;
+    }
+
+    private async getDonationByKey(key: DonationKeyInputDto): Promise<DonationModel> {
+        return await this.prisma.doacao.findUnique({
+            where: {
+                nome_campanha_codigo_barras_produto: {
+                    nome_campanha: key.campaignName,
+                    codigo_barras_produto: key.productBarcode
+                }
+            }
+        })
+    }
+
+    private async updateQuantityIfAlreadyExists(input: DonationInputDto): Promise<DonationModel> {
+        console.log(`Checking if donation already exists...`)
+        const donationExists = await this.getDonationByKey(input.key);
+
+        if(!donationExists){
+            console.log(`Donation doesn't exist yet, so it will be created`);
+            return null;
+        }
+
+        input.quantity += donationExists.quantidade;
+        console.log(`Donation already exists, so its quantity will be updated to: ${input.quantity}`);
+        return await this.updateByKey(input);
     }
 
 }
