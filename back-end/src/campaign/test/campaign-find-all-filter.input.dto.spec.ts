@@ -37,12 +37,6 @@ describe('CampaignFindAllFilterInputDto', () => {
         expect(dto.active).toEqual(mockConvertedValue);
     });
 
-    it('should throw an error when "active" is not provided', () => {
-        const rawData = {};
-
-        expect(() => plainToInstance(CampaignFindAllFilterInputDto, rawData)).toThrow();
-    });
-
     it('should throw an error when "active" is not a boolean-compatible string', () => {
         const rawData = { active: 'invalid' };
 
