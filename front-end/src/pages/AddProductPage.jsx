@@ -28,36 +28,36 @@ const AddProductPage = () => {
     }, []);
 
     const handleScan = async (code) => {
+
+        if(barCode) {
+            window.location.reload();
+            return;
+        }
+
         console.log('Código recebido:', code);
-        if (code.startsWith('789')) {
+        if (code.startsWith('789') && code.length === 13) {
             console.log('Processando código válido:', code);
-            setBarCode(code); 
-            setScanning(false); 
-            alert('Código de barras escaneado com sucesso!');
-            let product = {};
+            setBarCode(code);
+            setScanning(false);
             try {
-                product = await getProduct(code);
-            } catch (error) {
-                if (error.response) {
-                    // A resposta foi recebida, mas o servidor respondeu com um status de erro
-                    console.error('Erro ao buscar produto:', error.response.data);
-                    alert('Erro ao buscar produto. Tente novamente mais tarde.');
-                } else if (error.request) {
-                    // A requisição foi feita, mas nenhuma resposta foi recebida
-                    console.error('Erro ao buscar produto: Nenhuma resposta recebida', error.request);
-                    alert('Erro ao buscar produto. Tente novamente mais tarde.');
+                const product = await getProduct(code);
+                if (product && product.name) {
+                    console.log('Produto encontrado:', product);
+                    setName(product.name);
+                    setType(product.type);
+                    setVolume(product.volumeUnit);
+                    setBrand(product.brand || 'ignorado');
                 } else {
-                    // Algo aconteceu ao configurar a requisição que acionou um erro
-                    console.error('Erro ao buscar produto:', error.message);
-                    alert('Erro ao buscar produto. Tente novamente mais tarde.');
+                    setName('');
+                    setType('');
+                    setVolume('');
+                    setBrand('ignorado');
                 }
+            } catch (error) {
+                console.error('Erro ao buscar produto:', error);
             }
-            setName(product.name);
-            setType(product.type);
-            setVolume(product.volumeUnit);
         } else {
             console.log('Código inválido recebido:', code);
-            alert('Código de barras inválido. Tente novamente.');
         }
     };
 
@@ -67,34 +67,36 @@ const AddProductPage = () => {
         if (code.length === 13) {
             try {
                 const product = await getProduct(code);
-                if (product && product.barcode) {
+                if (product && product.barcode && product.name) {
                     console.log('Produto encontrado:', product);
                     setName(product.name);
                     setType(product.type);
                     setVolume(product.volumeUnit);
-                    alert('Produto encontrado e informações preenchidas.');
+                    setBrand(product.brand || 'ignorado');
                 } else {
                     setName('');
                     setType('');
                     setVolume('');
-                    alert('Produto não encontrado. Você pode cadastrar um novo produto.');
+                    setBrand('ignorado');
                 }
             } catch (error) {
-                if (error.response && error.response.status === 404) {
-                    setName('');
-                    setType('');
-                    setVolume('');
-                    alert('Produto não encontrado. Você pode cadastrar um novo produto.');
-                } else {
-                    console.error('Erro ao buscar produto:', error);
-                    alert('Erro ao buscar produto. Tente novamente mais tarde.');
-                }
+                console.error('Erro ao buscar produto:', error);
+                setName('');
+                setType('');
+                setVolume('');
+                setBrand('ignorado');
             }
         }
     };
     
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!name || !type || !volume || !barCode) {
+            alert('Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+
         const newProduct = { 
             barcode: barCode, 
             name, 
@@ -103,9 +105,11 @@ const AddProductPage = () => {
             volume_unit: volume 
         };
         try {
-            await createProduct(newProduct);
-            alert('Produto cadastrado com sucesso!');
-            navigate('/');
+            const createdProduct = await createProduct(newProduct);
+            if (createdProduct) {
+                alert('Produto cadastrado com sucesso!');
+                navigate('/');
+            }
         } catch (error) {
             console.error('Erro ao cadastrar produto:', error);
             alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
@@ -114,7 +118,8 @@ const AddProductPage = () => {
 
     const toggleScanning = () => {
         if (scanning) {
-            window.location.reload(); 
+            setScanning(false);
+            window.location.reload();
         } else {
             setScanning(true);
             setManualEntry(false);
@@ -150,6 +155,7 @@ const AddProductPage = () => {
                             type="button"
                             onClick={enableManualEntry}
                             className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
+                            disabled={scanning}
                         >
                             Digitar Código
                         </button>
