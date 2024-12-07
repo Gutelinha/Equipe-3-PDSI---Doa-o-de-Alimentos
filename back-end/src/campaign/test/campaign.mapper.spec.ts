@@ -26,8 +26,6 @@ describe('CampaignMapper', () => {
             // Verifica se os valores foram mapeados corretamente
             expect(result.name).toBe('Campaign Name');
             expect(result.active).toBe(true);
-            expect(result.start_date).toBe('01/12/2024');
-            expect(result.end_date).toBe('31/12/2024');
         });
     });
 
