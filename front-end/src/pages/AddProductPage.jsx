@@ -28,12 +28,17 @@ const AddProductPage = () => {
     }, []);
 
     const handleScan = async (code) => {
+
+        if(barCode) {
+            window.location.reload();
+            return;
+        }
+
         console.log('Código recebido:', code);
         if (code.startsWith('789') && code.length === 13) {
             console.log('Processando código válido:', code);
             setBarCode(code);
             setScanning(false);
-            alert('Código de barras escaneado com sucesso!');
             try {
                 const product = await getProduct(code);
                 if (product && product.name) {
@@ -42,21 +47,17 @@ const AddProductPage = () => {
                     setType(product.type);
                     setVolume(product.volumeUnit);
                     setBrand(product.brand || 'ignorado');
-                    alert('Produto encontrado :)');
                 } else {
                     setName('');
                     setType('');
                     setVolume('');
                     setBrand('ignorado');
-                    alert('Produto não encontrado. Mas você pode cadastrar um novo produto :)');
                 }
             } catch (error) {
                 console.error('Erro ao buscar produto:', error);
-                alert('Erro ao buscar produto. Tente novamente mais tarde.');
             }
         } else {
             console.log('Código inválido recebido:', code);
-            alert('Código de barras inválido. Tente novamente.');
         }
     };
 
@@ -72,17 +73,14 @@ const AddProductPage = () => {
                     setType(product.type);
                     setVolume(product.volumeUnit);
                     setBrand(product.brand || 'ignorado');
-                    alert('Produto encontrado :)');
                 } else {
                     setName('');
                     setType('');
                     setVolume('');
                     setBrand('ignorado');
-                    alert('Produto não encontrado. Mas você pode cadastrar um novo produto :)');
                 }
             } catch (error) {
                 console.error('Erro ao buscar produto:', error);
-                alert('Erro ao buscar produto. Tente manualmente');
                 setName('');
                 setType('');
                 setVolume('');
@@ -120,7 +118,8 @@ const AddProductPage = () => {
 
     const toggleScanning = () => {
         if (scanning) {
-            window.location.reload(); 
+            setScanning(false);
+            window.location.reload();
         } else {
             setScanning(true);
             setManualEntry(false);
@@ -156,6 +155,7 @@ const AddProductPage = () => {
                             type="button"
                             onClick={enableManualEntry}
                             className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
+                            disabled={scanning}
                         >
                             Digitar Código
                         </button>
