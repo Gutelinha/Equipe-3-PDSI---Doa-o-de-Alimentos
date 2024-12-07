@@ -186,8 +186,8 @@ describe('CampaignService', () => {
             const mockCampaign = {
                 nome: mockName,
                 ativa: true,
-                start_date: new Date('2024-01-01'),
-                end_date: new Date('2024-02-01'),
+                data_inicio: new Date('2024-01-01'),
+                data_fim: new Date('2024-02-01'),
             };
 
             mockPrismaService.campanha.findUnique.mockResolvedValue(mockCampaign);
