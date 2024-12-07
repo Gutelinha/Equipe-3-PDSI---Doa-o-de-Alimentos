@@ -5,7 +5,6 @@ import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class ProductMapper {
-
     toOutput(model: ProductModel): ProductOutputDto {
         return plainToInstance(ProductOutputDto, model, {
             excludeExtraneousValues: true
@@ -19,5 +18,4 @@ export class ProductMapper {
         output.message = customMessage;
         return output;
     }
-
 }

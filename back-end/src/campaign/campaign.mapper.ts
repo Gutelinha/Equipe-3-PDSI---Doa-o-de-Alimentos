@@ -5,7 +5,6 @@ import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class CampaignMapper{
-
     toOutput(model: CampaignModel): CampaignOutputDto {
         return plainToInstance(CampaignOutputDto, model, {
             excludeExtraneousValues: true
@@ -19,5 +18,4 @@ export class CampaignMapper{
         output.message = customMessage;
         return output;
     }
-
 }
