@@ -1,6 +1,5 @@
 import { CampaignMapper } from '../campaign.mapper';
 import { CampaignOutputDto, CampaignDeleteOutputDto } from '../dto';
-import { campanha as CampaignModel } from '@prisma/client';
 
 describe('CampaignMapper', () => {
     let mapper: CampaignMapper;
@@ -31,7 +30,7 @@ describe('CampaignMapper', () => {
 
     describe('toDeleteOutput', () => {
         it('should transform a CampaignModel into a CampaignDeleteOutputDto with a custom message', () => {
-            const campaignModel: CampaignModel = {
+            const campaignModel = {
                 nome: 'Campaign Name',
                 ativa: false,
                 data_inicio: new Date('2024-01-01'),
